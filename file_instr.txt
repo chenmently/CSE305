@@ -1,0 +1,5 @@
+import:
+C:/PATH/TO/mysql -u (user) -p (database_name) < cse305/file_name.sql
+
+export:
+C:/PATH/TO/mysqldump -u (user) -p (database_name) > cse305/file_name.sql

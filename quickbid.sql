@@ -183,33 +183,6 @@ LOCK TABLES `item` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `items`
---
-
-DROP TABLE IF EXISTS `items`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `items` (
-  `item_id` int(11) NOT NULL,
-  `item_name` char(20) DEFAULT NULL,
-  `item_type` char(20) DEFAULT NULL,
-  `year_manufactured` int(11) DEFAULT NULL,
-  `copies_sold` int(11) DEFAULT NULL,
-  `amount_in_stock` int(11) DEFAULT NULL,
-  PRIMARY KEY (`item_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `items`
---
-
-LOCK TABLES `items` WRITE;
-/*!40000 ALTER TABLE `items` DISABLE KEYS */;
-/*!40000 ALTER TABLE `items` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `person`
 --
 
@@ -299,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-18 18:23:31
+-- Dump completed on 2018-10-23  2:16:50

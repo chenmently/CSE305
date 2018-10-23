@@ -27,7 +27,7 @@ CREATE TABLE `auctions` (
   `bid_increment` decimal(10,2) DEFAULT NULL,
   `minimum_bid` decimal(10,2) DEFAULT NULL,
   `copies_sold` int(11) DEFAULT NULL,
-  `buyer_id` int(11) DEFAULT NULL,
+  `buyer_id` char(11) DEFAULT NULL,
   `monitor_id` char(11) DEFAULT NULL,
   `item_id` int(11) DEFAULT NULL,
   `seller_id` char(11) DEFAULT NULL,
@@ -35,10 +35,12 @@ CREATE TABLE `auctions` (
   `current_bid` decimal(10,2) DEFAULT NULL,
   `current_high_bid` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`auction_id`),
-  KEY `fk_auction_employee_id` (`monitor_id`),
   KEY `fk_auction_item_id` (`item_id`),
   KEY `fk_post_auctions` (`seller_id`,`auction_id`),
-  CONSTRAINT `fk_auction_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON UPDATE CASCADE
+  KEY `fk_auction_monitor_id` (`monitor_id`),
+  CONSTRAINT `fk_auction_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_auction_monitor_id` FOREIGN KEY (`monitor_id`) REFERENCES `employee` (`employee_id`),
+  CONSTRAINT `fk_auction_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `person` (`ssn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -64,7 +66,9 @@ CREATE TABLE `bid` (
   `bid_time` datetime NOT NULL,
   `bid_price` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`auction_id`,`bid_time`,`customer_id`),
-  CONSTRAINT `fk_bid_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE
+  KEY `fk_bid_customer_id_idx` (`customer_id`),
+  CONSTRAINT `fk_bid_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_bid_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`ssn`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -194,7 +198,7 @@ CREATE TABLE `person` (
   `city` char(20) DEFAULT NULL,
   `state` char(2) DEFAULT NULL,
   `zipCode` int(11) DEFAULT NULL,
-  `phone` int(11) DEFAULT NULL,
+  `phone` char(20) DEFAULT NULL,
   `email` char(50) DEFAULT NULL,
   PRIMARY KEY (`ssn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -222,8 +226,9 @@ CREATE TABLE `post` (
   `customer_id` char(11) NOT NULL,
   `auction_id` int(11) NOT NULL,
   PRIMARY KEY (`customer_id`,`auction_id`),
-  KEY `fk_post_auction_id` (`auction_id`),
-  CONSTRAINT `fk_post_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE
+  KEY `fk_post_auction_id_idx` (`auction_id`),
+  CONSTRAINT `fk_post_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_post_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`ssn`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -269,4 +274,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-23 18:12:25
+-- Dump completed on 2018-10-23 18:22:10

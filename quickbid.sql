@@ -30,17 +30,15 @@ CREATE TABLE `auctions` (
   `buyer_id` char(11) DEFAULT NULL,
   `monitor_id` char(11) DEFAULT NULL,
   `item_id` int(11) DEFAULT NULL,
-  `seller_id` char(11) DEFAULT NULL,
   `reserve` decimal(10,2) DEFAULT NULL,
   `current_bid` decimal(10,2) DEFAULT NULL,
   `current_high_bid` decimal(10,2) DEFAULT NULL,
+  `open_bid` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`auction_id`),
   KEY `fk_auction_item_id` (`item_id`),
-  KEY `fk_post_auctions` (`seller_id`,`auction_id`),
   KEY `fk_auction_monitor_id` (`monitor_id`),
   CONSTRAINT `fk_auction_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_auction_monitor_id` FOREIGN KEY (`monitor_id`) REFERENCES `employee` (`employee_id`),
-  CONSTRAINT `fk_auction_seller_id` FOREIGN KEY (`seller_id`) REFERENCES `person` (`ssn`)
+  CONSTRAINT `fk_auction_monitor_id` FOREIGN KEY (`monitor_id`) REFERENCES `employee` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -50,6 +48,7 @@ CREATE TABLE `auctions` (
 
 LOCK TABLES `auctions` WRITE;
 /*!40000 ALTER TABLE `auctions` DISABLE KEYS */;
+INSERT INTO `auctions` VALUES (1,1.00,NULL,NULL,NULL,NULL,NULL,10.00,NULL,NULL,5.00),(2,10.00,NULL,NULL,NULL,NULL,NULL,2000.00,NULL,NULL,1000.00);
 /*!40000 ALTER TABLE `auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -128,6 +127,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
+INSERT INTO `customer` VALUES (1,'1234-5678-1234-5678','111-11-1011','shiyong'),(1,'5678-1234-5678-1234','111-11-1012','haixia'),(1,'2345-6789-2345-6789','111-11-1013','john'),(1,'6789-2345-6789-2345','111-11-1014','phil');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -180,6 +180,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
+INSERT INTO `item` VALUES (1,NULL,'Titanic','DVD',4),(2,NULL,'Nissan Sentra','Car',1);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +211,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('111-11-1012',' Du','Haixia','456 Fortune Road','Stony Brook','NY',11790,'(516)632-4360','dhaixia@cs.sunysb.edu'),('111-11-1013','Smith','John','789 Peace Blvd.','Los Angeles','CA',12345,'(412)443-4321','shlu@ic.sunysb.edu'),('111-11-1014',' Phil','Lewis','135 Knowledge Lane','Stony Brook','NY',11794,'(516)666-8888','pml@cs.sunysb.edu'),('111-11-1015',' Smith','David','123 College road','Stony Brook','NY',11790,'(516)215-2345','smith.david@cs.sunysb.edu'),('111-11-1016',' Warren','David','456 Sunken Street','Stony Brook','NY',11794,'(516)632-9987','warren.david@cs.sunysb.edu'),('111-11-1111',' Lu','ShiYong','123 Success Street','Stony Brook','NY',11790,'(516)632-8959','shiyong@cs.sunysb.edu');
+INSERT INTO `person` VALUES ('111-11-1011',' Lu','ShiYong','123 Success Street','Stony Brook','NY',11790,'(516)632-8959','shiyong@cs.sunysb.edu'),('111-11-1012',' Du','Haixia','456 Fortune Road','Stony Brook','NY',11790,'(516)632-4360','dhaixia@cs.sunysb.edu'),('111-11-1013','Smith','John','789 Peace Blvd.','Los Angeles','CA',12345,'(412)443-4321','shlu@ic.sunysb.edu'),('111-11-1014',' Phil','Lewis','135 Knowledge Lane','Stony Brook','NY',11794,'(516)666-8888','pml@cs.sunysb.edu'),('111-11-1015',' Smith','David','123 College road','Stony Brook','NY',11790,'(516)215-2345','smith.david@cs.sunysb.edu'),('111-11-1016',' Warren','David','456 Sunken Street','Stony Brook','NY',11794,'(516)632-9987','warren.david@cs.sunysb.edu');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,14 +223,14 @@ DROP TABLE IF EXISTS `post`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `post` (
-  `expire_date` datetime DEFAULT NULL,
-  `post_date` datetime DEFAULT NULL,
+  `close_date` datetime DEFAULT NULL,
+  `open_date` datetime DEFAULT NULL,
   `customer_id` char(11) NOT NULL,
   `auction_id` int(11) NOT NULL,
   PRIMARY KEY (`customer_id`,`auction_id`),
   KEY `fk_post_auction_id_idx` (`auction_id`),
   CONSTRAINT `fk_post_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_post_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`ssn`) ON UPDATE CASCADE
+  CONSTRAINT `fk_poster_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`ssn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -239,6 +240,7 @@ CREATE TABLE `post` (
 
 LOCK TABLES `post` WRITE;
 /*!40000 ALTER TABLE `post` DISABLE KEYS */;
+INSERT INTO `post` VALUES ('2008-12-16 13:00:00','2018-10-23 19:28:20','111-11-1013',2),('2008-12-16 13:00:00','2018-10-23 19:34:15','111-11-1014',1);
 /*!40000 ALTER TABLE `post` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,4 +277,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-23 18:35:33
+-- Dump completed on 2018-10-23 19:34:51

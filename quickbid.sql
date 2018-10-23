@@ -210,6 +210,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
+INSERT INTO `person` VALUES ('111-11-1012',' Du','Haixia','456 Fortune Road','Stony Brook','NY',11790,'(516)632-4360','dhaixia@cs.sunysb.edu'),('111-11-1013','Smith','John','789 Peace Blvd.','Los Angeles','CA',12345,'(412)443-4321','shlu@ic.sunysb.edu'),('111-11-1014',' Phil','Lewis','135 Knowledge Lane','Stony Brook','NY',11794,'(516)666-8888','pml@cs.sunysb.edu'),('111-11-1015',' Smith','David','123 College road','Stony Brook','NY',11790,'(516)215-2345','smith.david@cs.sunysb.edu'),('111-11-1016',' Warren','David','456 Sunken Street','Stony Brook','NY',11794,'(516)632-9987','warren.david@cs.sunysb.edu'),('111-11-1111',' Lu','ShiYong','123 Success Street','Stony Brook','NY',11790,'(516)632-8959','shiyong@cs.sunysb.edu');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,4 +275,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-23 18:22:10
+-- Dump completed on 2018-10-23 18:35:33

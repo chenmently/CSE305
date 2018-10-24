@@ -34,9 +34,11 @@ CREATE TABLE `auctions` (
   `current_bid` decimal(10,2) DEFAULT NULL,
   `current_high_bid` decimal(10,2) DEFAULT NULL,
   `open_bid` decimal(10,2) DEFAULT NULL,
+  `max_bid` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`auction_id`),
   KEY `fk_auction_item_id` (`item_id`),
   KEY `fk_auction_monitor_id` (`monitor_id`),
+  KEY `fk_auction_max_bid_idx` (`max_bid`),
   CONSTRAINT `fk_auction_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_auction_monitor_id` FOREIGN KEY (`monitor_id`) REFERENCES `employee` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -48,7 +50,7 @@ CREATE TABLE `auctions` (
 
 LOCK TABLES `auctions` WRITE;
 /*!40000 ALTER TABLE `auctions` DISABLE KEYS */;
-INSERT INTO `auctions` VALUES (1,1.00,NULL,NULL,NULL,NULL,NULL,10.00,NULL,NULL,5.00),(2,10.00,NULL,NULL,NULL,NULL,NULL,2000.00,NULL,NULL,1000.00);
+INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011',NULL,1,10.00,11.00,11.00,5.00,NULL),(2,10.00,NULL,NULL,NULL,NULL,NULL,2000.00,NULL,NULL,1000.00,NULL);
 /*!40000 ALTER TABLE `auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,8 +66,12 @@ CREATE TABLE `bid` (
   `auction_id` int(11) NOT NULL,
   `bid_time` datetime NOT NULL,
   `bid_price` decimal(10,2) DEFAULT NULL,
+  `customer_max_bid` decimal(10,2) DEFAULT NULL,
+  `current_winner` char(20) DEFAULT NULL,
+  `bidcol` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`auction_id`,`bid_time`,`customer_id`),
   KEY `fk_bid_customer_id_idx` (`customer_id`),
+  KEY `idx_bid_customer_max_bid` (`customer_max_bid`) /*!80000 INVISIBLE */,
   CONSTRAINT `fk_bid_auction_id` FOREIGN KEY (`auction_id`) REFERENCES `auctions` (`auction_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_bid_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`ssn`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -77,6 +83,7 @@ CREATE TABLE `bid` (
 
 LOCK TABLES `bid` WRITE;
 /*!40000 ALTER TABLE `bid` DISABLE KEYS */;
+INSERT INTO `bid` VALUES ('111-11-1012',1,'2018-10-23 20:22:01',5.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:02',9.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:03',10.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:04',10.00,10.00,'111-11-1011',NULL);
 /*!40000 ALTER TABLE `bid` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,7 +146,7 @@ DROP TABLE IF EXISTS `employee`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `employee` (
-  `start_date` datetime DEFAULT NULL,
+  `start_date` date DEFAULT NULL,
   `hourly_rate` decimal(10,2) DEFAULT NULL,
   `employee_id` char(11) NOT NULL,
   `level` int(11) DEFAULT NULL,
@@ -154,6 +161,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES ('1998-11-01',60.00,'111-11-1015',NULL),('1999-02-02',50.00,'111-11-1016',NULL);
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -277,4 +285,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-23 19:34:51
+-- Dump completed on 2018-10-23 20:22:37

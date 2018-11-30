@@ -22,15 +22,15 @@ public class ItemDao {
 		List<Item> items = new ArrayList<Item>();
 				
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Item item = new Item();
-			item.setItemID(123);
-			item.setDescription("sample description");
-			item.setType("BOOK");
-			item.setName("Sample Book");
-			item.setNumCopies(2);
-			items.add(item);
-		}
+//		for (int i = 0; i < 10; i++) {
+//			Item item = new Item();
+//			item.setItemID(123);
+//			item.setDescription("sample description");
+//			item.setType("BOOK");
+//			item.setName("Sample Book");
+//			item.setNumCopies(2);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
 		
 		return items;

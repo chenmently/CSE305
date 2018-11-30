@@ -178,6 +178,7 @@ CREATE TABLE `item` (
   `name` char(255) DEFAULT NULL,
   `type` char(255) DEFAULT NULL,
   `num_copies` int(11) DEFAULT NULL,
+  `year_manufactured` int(4) DEFAULT NULL,
   PRIMARY KEY (`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -188,7 +189,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,NULL,'Titanic','DVD',4),(2,NULL,'Nissan Sentra','Car',1);
+INSERT INTO `item` VALUES (1,NULL,'Titanic','DVD',4,NULL),(2,NULL,'Nissan Sentra','Car',1,NULL);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,6 +276,30 @@ LOCK TABLES `sold_items` WRITE;
 /*!40000 ALTER TABLE `sold_items` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sold_items` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+ SET character_set_client = utf8mb4 ;
+CREATE TABLE `user` (
+  `username` varchar(16) NOT NULL,
+  `password` varchar(32) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -285,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-10-23 20:22:37
+-- Dump completed on 2018-11-30 13:17:46

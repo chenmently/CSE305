@@ -1,5 +1,9 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,14 +28,36 @@ public class PostDao {
 		List<Item> items = new ArrayList<Item>();
 				
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Item item = new Item();
-			item.setName("Sample item");
-			item.setSoldPrice(100);
-			items.add(item);
-		}
+//		for (int i = 0; i < 10; i++) {
+//			Item item = new Item();
+//			item.setName("Sample item");
+//			item.setSoldPrice(100);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		 try {
+			 Class.forName("com.mysql.jdbc.Driver");
+			 String dbPass = System.getenv("DB_PASSWORD");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
+			 Statement s = con.createStatement();
+			 ResultSet query_results = s.executeQuery("");
+			 
+			 while(query_results.next()) {
+				 Item item = new Item();
+				 item.setItemID(query_results.getInt("item_id"));
+				 item.setName(query_results.getString("name"));
+				 item.setType(query_results.getString("type"));
+				 item.setNumCopies(query_results.getInt("num_copies"));
+				 item.setDescription(query_results.getString("description"));
+//				 item.setSoldPrice(soldPrice);
+				 // find out which table to retrieve sold item price 
+				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+			 }
+			 
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+		 }
 
 		return items;
 		

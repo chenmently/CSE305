@@ -28,16 +28,16 @@ public class LoginDao {
 		login.setPassword(password);
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			String dbPass = System.getenv("DB_PASSWORD");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			String dbPass = System.getenv("DB_PASSWORD");
+//			System.out.println(dbPass);
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root",  "password");
 			Statement s = con.createStatement();
-
 			// query database for a row that matches user and pass
-			ResultSet query_results = s.executeQuery("");
+			ResultSet query_results = s.executeQuery("select role from user where username = '" + username+ "' and password = '" + password +"'");
 
 			// if row is returned, set the role and return login object
-			if (query_results != null) {
+			if (query_results.next()) {
 				login.setRole(query_results.getString("role"));
 				return login;
 			} else
@@ -66,9 +66,9 @@ public class LoginDao {
 		
 		/* Sample data begins */
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			String dbPass = System.getenv("DB_PASSWORD");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			String dbPass = System.getenv("DB_PASSWORD");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
 
 			String new_username = login.getUsername();
@@ -76,7 +76,7 @@ public class LoginDao {
 			String new_role = login.getRole() != null ? login.getRole() : "customer";
 
 			// create query to add row to user table
-			int updated_rows = s.executeUpdate("insert ...");
+			int updated_rows = s.executeUpdate("insert into user (username, password, role) values ('"+ new_username+"','" + new_pwd + "','" + new_role + "')");
 			if (updated_rows == 1) return "success";
 			else return "failure";
 

@@ -1,5 +1,9 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +36,27 @@ public class ItemDao {
 //			items.add(item);
 //		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 ResultSet query_results = s.executeQuery("select * from item");
+			 while(query_results.next()) {
+				 Item item = new Item();
+				 item.setItemID(query_results.getInt("item_id"));
+				 item.setName(query_results.getString("name"));
+				 item.setType(query_results.getString("type"));
+				 item.setNumCopies(query_results.getInt("num_copies"));
+				 item.setDescription(query_results.getString("description"));
+				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+				 items.add(item);
+			 }
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 
 	}
@@ -49,17 +73,45 @@ public class ItemDao {
 		
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 5; i++) {
-			Item item = new Item();
-			item.setItemID(123);
-			item.setDescription("sample description");
-			item.setType("BOOK");
-			item.setName("Sample Book");
-			item.setNumCopies(2);
-			items.add(item);
-		}
+//		for (int i = 0; i < 5; i++) {
+//			Item item = new Item();
+//			item.setItemID(123);
+//			item.setDescription("sample description");
+//			item.setType("BOOK");
+//			item.setName("Sample Book");
+//			item.setNumCopies(2);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 ResultSet query_results = s.executeQuery("select *, SUM(copies_sold) from sold_items "
+				 		+ "inner join auctions "
+				 			+ "on auctions.auction_id = sold_items.auction_id "
+				 		+ "inner join item "
+				 			+ "on item.item_id = auctions.item_id "
+				 		+ "where auctions.is_closed = 1 " 
+				 		+ "group by item.name "
+				 		+ "order by SUM(copies_sold) desc "
+				 		+ "limit 5");
+			 while(query_results.next()) {
+				 Item item = new Item();
+				 item.setItemID(query_results.getInt("item_id"));
+				 item.setName(query_results.getString("name"));
+				 item.setType(query_results.getString("type"));
+				 item.setNumCopies(query_results.getInt("num_copies"));
+				 item.setDescription(query_results.getString("description"));
+				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+				 items.add(item);
+			 }
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 
 	}
@@ -76,17 +128,44 @@ public class ItemDao {
 		List<Item> items = new ArrayList<Item>();
 				
 		/*Sample data begins*/
-		for (int i = 0; i < 6; i++) {
-			Item item = new Item();
-			item.setItemID(123);
-			item.setDescription("sample description");
-			item.setType("BOOK");
-			item.setName("Sample Book");
-			item.setSoldPrice(150);
-			items.add(item);
-		}
+//		for (int i = 0; i < 6; i++) {
+//			Item item = new Item();
+//			item.setItemID(123);
+//			item.setDescription("sample description");
+//			item.setType("BOOK");
+//			item.setName("Sample Book");
+//			item.setSoldPrice(150);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 ResultSet query_results = s.executeQuery("select *, SUM(current_high_bid) "
+			 		+ "FROM sold_items "
+			 		+ "INNER JOIN auctions "
+			 			+ "ON sold_items.auction_id = auctions.auction_id " + 
+			 		"INNER JOIN item "
+			 			+ "ON auctions.item_id = item.item_id " + 
+			 		"where item.name like \'%" +  searchKeyword    + "%\' or item.type like \'%" + searchKeyword + "%\'");
+			 while(query_results.next()) {
+				 Item item = new Item();
+				 item.setItemID(query_results.getInt("item_id"));
+				 item.setName(query_results.getString("name"));
+				 item.setType(query_results.getString("type"));
+				 item.setNumCopies(query_results.getInt("num_copies"));
+				 item.setDescription(query_results.getString("description"));
+				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+				 item.setSoldPrice(query_results.getInt("SUM(current_high_bid)"));
+				 items.add(item);
+			 }
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 
 	}
@@ -103,17 +182,28 @@ public class ItemDao {
 		List<Item> items = new ArrayList<Item>();
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Item item = new Item();
-			item.setItemID(123);
-			item.setDescription("sample description");
-			item.setType("BOOK");
-			item.setName("Sample Book");
-			item.setNumCopies(2);
-			items.add(item);
-		}
+//		for (int i = 0; i < 4; i++) {
+//			Item item = new Item();
+//			item.setItemID(123);
+//			item.setDescription("sample description");
+//			item.setType("BOOK");
+//			item.setName("Sample Book");
+//			item.setNumCopies(2);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 
+			 // fix sql query for item suggestions
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 
 	}
@@ -133,7 +223,7 @@ public class ItemDao {
 		 * The items, bids and auctions Lists have to be added to the "output" List and returned
 		 */
 
-		List output = new ArrayList();
+		List<List<?>> output = new ArrayList<>();
 		List<Item> items = new ArrayList<Item>();
 		List<Bid> bids = new ArrayList<Bid>();
 		List<Auction> auctions = new ArrayList<Auction>();
@@ -159,7 +249,16 @@ public class ItemDao {
 			auctions.add(auction);
 		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		output.add(items);
 		output.add(bids);
 		output.add(auctions);
@@ -179,13 +278,22 @@ public class ItemDao {
 		List<Item> items = new ArrayList<Item>();
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 6; i++) {
-			Item item = new Item();
-			item.setType("BOOK");
-			items.add(item);
-		}
+//		for (int i = 0; i < 6; i++) {
+//			Item item = new Item();
+//			item.setType("BOOK");
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 	}
 
@@ -201,7 +309,7 @@ public class ItemDao {
 		 * The items and auctions Lists are to be added to the "output" List and returned
 		 */
 
-		List output = new ArrayList();
+		List<List<?>> output = new ArrayList<>();
 		List<Item> items = new ArrayList<Item>();
 		List<Auction> auctions = new ArrayList<Auction>();
 		
@@ -220,7 +328,16 @@ public class ItemDao {
 			auctions.add(auction);
 		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		output.add(items);
 		output.add(auctions);
 		
@@ -239,7 +356,7 @@ public class ItemDao {
 		 * The items and auctions Lists are to be added to the "output" List and returned
 		 */
 
-		List output = new ArrayList();
+		List<List<?>> output = new ArrayList<>();
 		List<Item> items = new ArrayList<Item>();
 		List<Auction> auctions = new ArrayList<Auction>();
 				
@@ -258,7 +375,16 @@ public class ItemDao {
 			auctions.add(auction);
 		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		output.add(items);
 		output.add(auctions);
 		
@@ -277,17 +403,46 @@ public class ItemDao {
 		List<Item> items = new ArrayList<Item>();
 				
 		/*Sample data begins*/
-		for (int i = 0; i < 6; i++) {
-			Item item = new Item();
-			item.setItemID(123);
-			item.setDescription("sample description");
-			item.setType("BOOK");
-			item.setName("Sample Book");
-			item.setNumCopies(50);
-			items.add(item);
-		}
+//		for (int i = 0; i < 6; i++) {
+//			Item item = new Item();
+//			item.setItemID(123);
+//			item.setDescription("sample description");
+//			item.setType("BOOK");
+//			item.setName("Sample Book");
+//			item.setNumCopies(50);
+//			items.add(item);
+//		}
 		/*Sample data ends*/
-		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
+			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 ResultSet query_results = s.executeQuery("select *, SUM(copies_sold) from sold_items "
+				 		+ "inner join auctions "
+				 			+ "on auctions.auction_id = sold_items.auction_id "
+				 		+ "inner join item "
+				 			+ "on item.item_id = auctions.item_id "
+				 		+ "where auctions.is_closed = 1 and "
+				 		+ "sold_items.customer_id = '" + customerID + "' "
+				 		+ "group by item.name "
+				 		+ "order by SUM(copies_sold) desc "
+				 		+ "limit 5");
+			 while(query_results.next()) {
+				 Item item = new Item();
+				 item.setItemID(query_results.getInt("item_id"));
+				 item.setName(query_results.getString("name"));
+				 item.setType(query_results.getString("type"));
+				 item.setNumCopies(query_results.getInt("num_copies"));
+				 item.setDescription(query_results.getString("description"));
+				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+				 items.add(item);
+			 }
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
 		return items;
 
 	}

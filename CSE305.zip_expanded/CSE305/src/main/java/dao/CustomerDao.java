@@ -49,7 +49,7 @@ public class CustomerDao {
 //		/*Sample data ends*/
 		
 		 try {
-			 Class.forName("com.mysql.jdbc.Driver");
+			 Class.forName("com.mysql.cj.jdbc.Driver");
 			 String dbPass = System.getenv("DB_PASSWORD");
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
 			 Statement s = con.createStatement();
@@ -161,6 +161,7 @@ public class CustomerDao {
 		 * The Customer's ID is required to be returned as a String
 		 */
 
+		// return their string id NOT SSN
 		return "111-11-1111";
 	}
 

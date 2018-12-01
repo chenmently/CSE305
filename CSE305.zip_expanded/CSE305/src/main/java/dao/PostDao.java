@@ -36,12 +36,21 @@ public class PostDao {
 //		}
 		/*Sample data ends*/
 		 try {
-			 Class.forName("com.mysql.jdbc.Driver");
-			 String dbPass = System.getenv("DB_PASSWORD");
-			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
-			 Statement s = con.createStatement();
-			 ResultSet query_results = s.executeQuery("");
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+//			 String dbPass = System.getenv("DB_PASSWORD");
 			 
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 String[] date = post.getExpireDate().split("-");
+
+			 ResultSet query_results = s.executeQuery("select * from auctions "
+			 		+ "inner join item "
+			 			+ "on item.item_id = auctions.item_id "
+			 		+ "inner join bid "
+			 			+ "on bid.auction_id = auctions.auction_id "
+			 		+ "where auctions.is_closed = 1 and"
+			 			+ " MONTH(bid_time) = " + date[0] + " and YEAR(bid_time) = " + date[1]
+			 			+ " and auctions.current_high_bid = bid.bid_price");
 			 while(query_results.next()) {
 				 Item item = new Item();
 				 item.setItemID(query_results.getInt("item_id"));
@@ -49,9 +58,9 @@ public class PostDao {
 				 item.setType(query_results.getString("type"));
 				 item.setNumCopies(query_results.getInt("num_copies"));
 				 item.setDescription(query_results.getString("description"));
-//				 item.setSoldPrice(soldPrice);
-				 // find out which table to retrieve sold item price 
+				 item.setSoldPrice(query_results.getInt("current_high_bid"));
 				 item.setYearManufactured(query_results.getInt("year_manufactured"));
+				 items.add(item);
 			 }
 			 
 		 }

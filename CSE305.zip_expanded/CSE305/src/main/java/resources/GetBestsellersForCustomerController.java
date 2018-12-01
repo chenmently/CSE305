@@ -32,10 +32,9 @@ public class GetBestsellersForCustomerController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String customerID = (String)request.getSession(false).getAttribute("customerID");
-		
+		System.out.println(customerID);
 		ItemDao itemDao = new ItemDao();
 		List<Item> items = itemDao.getBestsellersForCustomer(customerID);
-		
 		request.setAttribute("items", items);
 		RequestDispatcher rd = request.getRequestDispatcher("showBestsellersForCustomer.jsp");
 		rd.forward(request, response);

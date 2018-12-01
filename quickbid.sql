@@ -35,6 +35,7 @@ CREATE TABLE `auctions` (
   `current_high_bid` decimal(10,2) DEFAULT NULL,
   `open_bid` decimal(10,2) DEFAULT NULL,
   `max_bid` decimal(10,2) DEFAULT NULL,
+  `is_closed` int(1) DEFAULT NULL,
   PRIMARY KEY (`auction_id`),
   KEY `fk_auction_item_id` (`item_id`),
   KEY `fk_auction_monitor_id` (`monitor_id`),
@@ -50,7 +51,7 @@ CREATE TABLE `auctions` (
 
 LOCK TABLES `auctions` WRITE;
 /*!40000 ALTER TABLE `auctions` DISABLE KEYS */;
-INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011',NULL,1,10.00,11.00,11.00,5.00,NULL),(2,10.00,NULL,NULL,NULL,NULL,NULL,2000.00,NULL,NULL,1000.00,NULL);
+INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011',NULL,1,10.00,11.00,11.00,5.00,NULL,1),(2,10.00,NULL,1,'111-11-1012',NULL,2,10.00,NULL,11.00,0.00,NULL,1),(3,1.00,NULL,5,'111-11-1011',NULL,1,10.00,11.00,12.00,5.00,NULL,1);
 /*!40000 ALTER TABLE `auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +69,6 @@ CREATE TABLE `bid` (
   `bid_price` decimal(10,2) DEFAULT NULL,
   `customer_max_bid` decimal(10,2) DEFAULT NULL,
   `current_winner` char(20) DEFAULT NULL,
-  `bidcol` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`auction_id`,`bid_time`,`customer_id`),
   KEY `fk_bid_customer_id_idx` (`customer_id`),
   KEY `idx_bid_customer_max_bid` (`customer_max_bid`) /*!80000 INVISIBLE */,
@@ -83,7 +83,7 @@ CREATE TABLE `bid` (
 
 LOCK TABLES `bid` WRITE;
 /*!40000 ALTER TABLE `bid` DISABLE KEYS */;
-INSERT INTO `bid` VALUES ('111-11-1012',1,'2018-10-23 20:22:01',5.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:02',9.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:03',10.00,10.00,'111-11-1012',NULL),('111-11-1011',1,'2018-10-23 20:22:04',10.00,10.00,'111-11-1011',NULL);
+INSERT INTO `bid` VALUES ('111-11-1012',1,'2018-10-23 20:22:01',5.00,10.00,'111-11-1012'),('111-11-1011',1,'2018-10-23 20:22:02',9.00,11.00,'111-11-1011'),('111-11-1011',1,'2018-10-23 20:22:03',10.00,11.00,'111-11-1011'),('111-11-1011',1,'2018-10-23 20:22:04',11.00,11.00,'111-11-1011'),('111-11-1012',2,'2018-10-23 20:22:03',11.00,200.00,'111-11-1012');
 /*!40000 ALTER TABLE `bid` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS `bought_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `bought_items` (
-  `customer_id` int(11) NOT NULL,
+  `customer_id` char(20) NOT NULL,
   `auction_id` int(11) NOT NULL,
   PRIMARY KEY (`customer_id`,`auction_id`),
   KEY `pk_auction_id` (`auction_id`)
@@ -189,7 +189,7 @@ CREATE TABLE `item` (
 
 LOCK TABLES `item` WRITE;
 /*!40000 ALTER TABLE `item` DISABLE KEYS */;
-INSERT INTO `item` VALUES (1,NULL,'Titanic','DVD',4,NULL),(2,NULL,'Nissan Sentra','Car',1,NULL);
+INSERT INTO `item` VALUES (1,NULL,'Titanic','DVD',4,2000),(2,NULL,'Nissan Sentra','Car',1,2004);
 /*!40000 ALTER TABLE `item` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,7 +261,7 @@ DROP TABLE IF EXISTS `sold_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `sold_items` (
-  `customer_id` int(11) NOT NULL,
+  `customer_id` char(20) NOT NULL,
   `auction_id` int(11) NOT NULL,
   PRIMARY KEY (`customer_id`,`auction_id`),
   KEY `fk_auction_id` (`auction_id`)
@@ -274,6 +274,7 @@ CREATE TABLE `sold_items` (
 
 LOCK TABLES `sold_items` WRITE;
 /*!40000 ALTER TABLE `sold_items` DISABLE KEYS */;
+INSERT INTO `sold_items` VALUES ('shiyang',1),('haixia',2),('shiyang',3);
 /*!40000 ALTER TABLE `sold_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,7 +286,7 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `user` (
-  `username` varchar(16) NOT NULL,
+  `username` varchar(50) NOT NULL,
   `password` varchar(32) NOT NULL,
   `role` varchar(45) NOT NULL,
   PRIMARY KEY (`username`)
@@ -298,6 +299,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES ('bob.smith@gmail.com','password','customerRepresentative'),('customer@gmail.com','password','customer'),('root@gmail.com','password','manager'),('shiyong@cs.sunysb.edu','password','customer');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -310,4 +312,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-30 13:17:46
+-- Dump completed on 2018-12-01  8:05:24

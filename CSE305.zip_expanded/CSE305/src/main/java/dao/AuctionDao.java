@@ -1,5 +1,9 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,20 +25,31 @@ public class AuctionDao {
 		 */
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Auction auction = new Auction();
-			auction.setAuctionID(1);
-			auction.setBidIncrement(10);
-			auction.setMinimumBid(10);
-			auction.setCopiesSold(12);
-			auction.setItemID(1234);
-			auction.setClosingBid(120);
-			auction.setCurrentBid(120);
-			auction.setCurrentHighBid(120);
-			auction.setReserve(10);
-			auctions.add(auction);
-		}
-		/*Sample data ends*/
+	
+		try {
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 String sql = "select * from auction";
+			 ResultSet rs = s.executeQuery(sql);
+			 while(rs.next()){
+				 Auction auction = new Auction();
+				 auction.setAuctionID(rs.getInt("auction_id"));
+				 auction.setBidIncrement(rs.getFloat("bid_increment"));
+				 auction.setMinimumBid(rs.getFloat("minimum_bid"));
+				 auction.setCopiesSold(rs.getInt("copies_sold"));
+				 auction.setItemID(rs.getInt("item_id"));
+				 auction.setClosingBid(rs.getInt("current_bid"));
+				 auction.setCurrentBid(rs.getInt("current_bid"));
+				 auction.setCurrentHighBid(rs.getInt("current_bid"));
+				 auction.setReserve(rs.getInt("reserve"));
+				 auctions.add(auction);
+		      }
+		      rs.close();
+		 	}
+		 	catch(Exception e) {
+		 	System.out.println(e);
+		 	}
 		
 		return auctions;
 

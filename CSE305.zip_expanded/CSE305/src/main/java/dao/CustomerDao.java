@@ -35,7 +35,7 @@ public class CustomerDao {
 				 Class.forName("com.mysql.cj.jdbc.Driver");
 				 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 				 Statement s = con.createStatement();
-				 String sql = "select * from customer, person where customer.ssn = person.ssn;";
+				 String sql = "select *, LPAD(zipCode, 5,'0') as zip from customer, person where customer.ssn = person.ssn;";
 				 ResultSet rs = s.executeQuery(sql);
 				 while(rs.next()){
 					 Customer customer = new Customer();
@@ -46,7 +46,7 @@ public class CustomerDao {
 					 customer.setCity(rs.getString("city"));
 					 customer.setState(rs.getString("state"));
 					 customer.setEmail(rs.getString("email"));
-					 customer.setZipCode(rs.getInt("zipCode"));
+					 customer.setZipCode(rs.getString("zip"));
 					 customer.setTelephone(rs.getString("phone"));
 					 customer.setCreditCard(rs.getString("ccNum"));
 					 customer.setRating(rs.getInt("rating"));
@@ -64,7 +64,7 @@ public class CustomerDao {
 				 Class.forName("com.mysql.cj.jdbc.Driver");
 				 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 				 Statement s = con.createStatement();
-				 String sql = "select * from customer join person on customer.ssn = person.ssn" + 
+				 String sql = "select *, LPAD(zipCode, 5,'0') as zip from customer join person on customer.ssn = person.ssn" + 
 				 		" where" + 
 				 		"    person.ssn LIKE '%" + searchKeyword + "%'" + 
 				 		"    OR ccNum LIKE '%" + searchKeyword + "%'" + 
@@ -87,7 +87,7 @@ public class CustomerDao {
 					 customer.setCity(rs.getString("city"));
 					 customer.setState(rs.getString("state"));
 					 customer.setEmail(rs.getString("email"));
-					 customer.setZipCode(rs.getInt("zipCode"));
+					 customer.setZipCode(rs.getString("zip"));
 					 customer.setTelephone(rs.getString("phone"));
 					 customer.setCreditCard(rs.getString("ccNum"));
 					 customer.setRating(rs.getInt("rating"));
@@ -136,7 +136,7 @@ public class CustomerDao {
 			 Class.forName("com.mysql.cj.jdbc.Driver");
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
-			 String sql = "select * from customer, person where customer.ssn = person.ssn;";
+			 String sql = "select *, LPAD(zipCode, 5,'0') as zip from customer, person where customer.ssn = person.ssn;";
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Customer customer = new Customer();
@@ -147,7 +147,7 @@ public class CustomerDao {
 				 customer.setCity(rs.getString("city"));
 				 customer.setState(rs.getString("state"));
 				 customer.setEmail(rs.getString("email"));
-				 customer.setZipCode(rs.getInt("zipCode"));
+				 customer.setZipCode(rs.getString("zip"));
 				 customers.add(customer);
 		      }
 		      rs.close();
@@ -178,7 +178,7 @@ public class CustomerDao {
 			while(rs.next()){
 				 ssn = rs.getString("ssn");
 			}
-		    sql = "select * from customer, person where customer.ssn = person.ssn and person.ssn = '" + ssn + "';";
+		    sql = "select *, LPAD(zipCode, 5,'0') as zip from customer, person where customer.ssn = person.ssn and person.ssn = '" + ssn + "';";
 			rs = s.executeQuery(sql);
 			while(rs.next()){
 
@@ -189,7 +189,7 @@ public class CustomerDao {
 				customer.setCity(rs.getString("city"));
 				customer.setState(rs.getString("state"));
 				customer.setEmail(rs.getString("email"));
-				customer.setZipCode(rs.getInt("zipCode"));
+				customer.setZipCode(rs.getString("zip"));
 				customer.setCreditCard(rs.getString("ccNum"));
 				customer.setTelephone(rs.getString("phone"));
 				customer.setSSN(rs.getString("ssn"));
@@ -299,7 +299,7 @@ public class CustomerDao {
 			customer.setCity("Stony Brook");
 			customer.setState("NY");
 			customer.setEmail("shiyong@cs.sunysb.edu");
-			customer.setZipCode(11790);
+			customer.setZipCode("11790");
 			customers.add(customer);			
 		}
 		/*Sample data ends*/
@@ -325,7 +325,7 @@ public class CustomerDao {
 		String Address = customer.getAddress();
 		String City = customer.getCity();
 		String State = customer.getState();
-		int zipCode = customer.getZipCode();
+		String zipCode = customer.getZipCode();
 		String telephone = customer.getTelephone();
 		String email = customer.getEmail();
 		String creditCard = customer.getCreditCard();
@@ -376,7 +376,7 @@ public class CustomerDao {
 		String Address = customer.getAddress();
 		String City = customer.getCity();
 		String State = customer.getState();
-		int zipCode = customer.getZipCode();
+		String zipCode = customer.getZipCode();
 		String telephone = customer.getTelephone();
 		String email = customer.getEmail();
 		String creditCard = customer.getCreditCard();

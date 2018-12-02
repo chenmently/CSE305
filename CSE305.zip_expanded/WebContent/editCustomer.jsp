@@ -65,7 +65,7 @@
 	  </div>
    	  <div class="form-group">
 	    <label for="customerSSN">SSN (Customer ID)</label>
-	    <input type="text" class="form-control" id="customerSSN" name="customerSSN" placeholder="XXX-XX-XXXX" value=${editCustomer.customerID} readonly>
+	    <input type="text" class="form-control" id="customerSSN" name="customerSSN" placeholder="XXX-XX-XXXX" value=${editCustomer.SSN} readonly>
 	  </div>
    	  <div class="form-group">
 	    <label for="customerCreditCard">Credit Card Number</label>

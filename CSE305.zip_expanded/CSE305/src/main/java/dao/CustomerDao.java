@@ -29,35 +29,34 @@ public class CustomerDao {
 		 * The students code to fetch data from the database based on searchKeyword will be written here
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
-		
-//		/*Sample data begins*/
-//		for (int i = 0; i < 10; i++) {
-//			Customer customer = new Customer();
-//			customer.setCustomerID("111-11-1111");
-//			customer.setAddress("123 Success Street");
-//			customer.setLastName("Lu");
-//			customer.setFirstName("Shiyong");
-//			customer.setCity("Stony Brook");
-//			customer.setState("NY");
-//			customer.setEmail("shiyong@cs.sunysb.edu");
-//			customer.setZipCode(11790);
-//			customer.setTelephone("5166328959");
-//			customer.setCreditCard("1234567812345678");
-//			customer.setRating(1);
-//			customers.add(customer);			
-//		}
-//		/*Sample data ends*/
-		
 		 try {
 			 Class.forName("com.mysql.cj.jdbc.Driver");
-			 String dbPass = System.getenv("DB_PASSWORD");
-			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", dbPass);
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
-			 ResultSet query_results = s.executeQuery("");
+			 String sql = "select * from customer, person where customer.ssn = person.ssn;";
+			 ResultSet rs = s.executeQuery(sql);
+			 while(rs.next()){
+				 Customer customer = new Customer();
+				 customer.setCustomerID(rs.getString("customer_id"));
+				 customer.setAddress(rs.getString("address"));
+				 customer.setLastName(rs.getString("last_name"));
+				 customer.setFirstName(rs.getString("first_name"));
+				 customer.setCity(rs.getString("city"));
+				 customer.setState(rs.getString("state"));
+				 customer.setEmail(rs.getString("email"));
+				 customer.setZipCode(rs.getInt("zipCode"));
+				 customer.setTelephone(rs.getString("phone"));
+				 customer.setCreditCard(rs.getString("ccNum"));
+				 customer.setRating(rs.getInt("rating"));
+				 customers.add(customer);
+		      }
+		      rs.close();
 		 }
 		 catch(Exception e) {
 			 System.out.println(e);
 		 }
+		 
+		 
 		return customers;
 	}
 
@@ -119,23 +118,43 @@ public class CustomerDao {
 		 * The students code to fetch data from the database will be written here
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
-		
-		/*Sample data begins*/
-		Customer customer = new Customer();
-		customer.setCustomerID("111-11-1111");
-		customer.setAddress("123 Success Street");
-		customer.setLastName("Lu");
-		customer.setFirstName("Shiyong");
-		customer.setCity("Stony Brook");
-		customer.setState("NY");
-		customer.setEmail("shiyong@cs.sunysb.edu");
-		customer.setZipCode(11790);
-		customer.setTelephone("5166328959");
-		customer.setCreditCard("1234567812345678");
-		customer.setRating(1);
-		/*Sample data ends*/
-		
-		return customer;
+		try {
+			Customer customer = new Customer();
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			String sql = "select ssn from customer where customer_id = '" +customerID+ "';";
+			ResultSet rs = s.executeQuery(sql);
+			String ssn ="";
+			while(rs.next()){
+				 ssn = rs.getString("ssn");
+			}
+		    sql = "select * from customer, person where customer.ssn = person.ssn and person.ssn = '" + ssn + "';";
+			rs = s.executeQuery(sql);
+			while(rs.next()){
+
+				customer.setCustomerID(rs.getString("customer_id"));
+				customer.setAddress(rs.getString("address"));
+				customer.setLastName(rs.getString("last_name"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setCity(rs.getString("city"));
+				customer.setState(rs.getString("state"));
+				customer.setEmail(rs.getString("email"));
+				customer.setZipCode(rs.getInt("zipCode"));
+				customer.setCreditCard(rs.getString("ccNum"));
+				customer.setTelephone(rs.getString("phone"));
+				customer.setSSN(rs.getString("ssn"));
+				 
+			}
+			rs.close();
+			return customer;
+			 
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return null;
+		 }
+
 	}
 	
 	public String deleteCustomer(String customerID) {
@@ -145,9 +164,39 @@ public class CustomerDao {
 		 * The students code to delete the data from the database will be written here
 		 * customerID, which is the Customer's ID who's details have to be deleted, is given as method parameter
 		 */
-
+		
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First delete from customer table
+			String sql = "select ssn from customer where customer_id = '" +customerID+ "';";
+			ResultSet rs = s.executeQuery(sql);
+			String ssn = "";
+			while(rs.next()){
+				 ssn = rs.getString("ssn");
+			}
+		    rs.close();
+		    sql = "delete from customer where ssn  = '" + ssn + "';";	
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				sql = "delete from person where ssn  = '" + ssn + "';";	
+				updated_rows = s.executeUpdate(sql);
+				if(updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+			 
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
 		/*Sample data begins*/
-		return "success";
+		
 		/*Sample data ends*/
 		
 	}
@@ -205,10 +254,47 @@ public class CustomerDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database insertion of the customer details and return "success" or "failure" based on result of the database insertion.
 		 */
+		String SSN = customer.getSSN();
+		String customerID = customer.getCustomerID();
+		String firstName = customer.getFirstName();
+		String lastName = customer.getLastName();
+		String Address = customer.getAddress();
+		String City = customer.getCity();
+		String State = customer.getState();
+		int zipCode = customer.getZipCode();
+		String telephone = customer.getTelephone();
+		String email = customer.getEmail();
+		String creditCard = customer.getCreditCard();
+		int rating = customer.getRating();
 		
-		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+		
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First insert into person table
+			String sql = "insert into person values ('"+ SSN +"','" + lastName + "','" + firstName +"','" + Address +"','" + City +"','" + State +"','" + zipCode +"','" + telephone +"','" + email +"');";
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				//Then insert into customer table
+				sql = "insert into customer values ('"+ rating + "','" + creditCard + "','" + SSN + "','" + customerID + "');";
+				updated_rows = s.executeUpdate(sql);
+				if (updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
+		
+		
+		
+		
 
 	}
 
@@ -221,9 +307,43 @@ public class CustomerDao {
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
 		
-		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+		String SSN = customer.getSSN();
+		String customerID = customer.getCustomerID();
+		String firstName = customer.getFirstName();
+		String lastName = customer.getLastName();
+		String Address = customer.getAddress();
+		String City = customer.getCity();
+		String State = customer.getState();
+		int zipCode = customer.getZipCode();
+		String telephone = customer.getTelephone();
+		String email = customer.getEmail();
+		String creditCard = customer.getCreditCard();
+		int rating = customer.getRating();
+		
+		
+		// NOTE , BECAUSE OF THE JSP PAGE, customerID ACTUALLY HOLDS A SOCIAL SECURITY # WHILE SSN IS NULL
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First insert into person table
+			String sql = "update person set state = '" + State + "', last_name = '" + lastName + "', first_name = '" + firstName + "', address = '" + Address + "', zipCode = '" + zipCode + "', city = '" + City + "', phone = '" + telephone  + "', email = '" + email + "' where ssn = '" + customerID + "';";
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				sql = "update customer set ccNum = '" + creditCard + "', rating = '" + rating + "' where ssn = '" + customerID + "';" ;
+				updated_rows = s.executeUpdate(sql);
+				if (updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
+	
 
 	}
 

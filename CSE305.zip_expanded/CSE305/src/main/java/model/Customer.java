@@ -7,6 +7,7 @@ public class Customer {
 	 * Each instance variable has a corresponding getter and setter
 	 */
 	
+	private String SSN;
 	private String customerID;
 	private String firstName;
 	private String lastName;
@@ -18,6 +19,12 @@ public class Customer {
 	private String email;
 	private String creditCard;
 	private int rating;
+	public String getSSN(){
+		return SSN;
+	}
+	public void setSSN(String ssn) {
+		SSN = ssn;
+	}
 	public String getCustomerID() {
 		return customerID;
 	}

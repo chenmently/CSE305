@@ -27,11 +27,13 @@ public class LoginDao {
 		login.setUsername(username);
 		login.setPassword(password);
 
+		
+		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 //			String dbPass = System.getenv("DB_PASSWORD");
 //			System.out.println(dbPass);
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root",  "password");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
 			// query database for a row that matches user and pass
 			ResultSet query_results = s.executeQuery("select role from user where username = '" + username+ "' and password = '" + password +"'");
@@ -67,7 +69,6 @@ public class LoginDao {
 		/* Sample data begins */
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-//			String dbPass = System.getenv("DB_PASSWORD");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
 

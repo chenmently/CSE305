@@ -93,20 +93,31 @@ public class CustomerDao {
 		List<Customer> customers = new ArrayList<Customer>();
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Customer customer = new Customer();
-			customer.setCustomerID("111-11-1111");
-			customer.setAddress("123 Success Street");
-			customer.setLastName("Lu");
-			customer.setFirstName("Shiyong");
-			customer.setCity("Stony Brook");
-			customer.setState("NY");
-			customer.setEmail("shiyong@cs.sunysb.edu");
-			customer.setZipCode(11790);
-			customers.add(customer);			
-		}
-		/*Sample data ends*/
 		
+		try {
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+			 String sql = "select * from customer, person where customer.ssn = person.ssn;";
+			 ResultSet rs = s.executeQuery(sql);
+			 while(rs.next()){
+				 Customer customer = new Customer();
+				 customer.setCustomerID(rs.getString("ssn"));
+				 customer.setAddress(rs.getString("address"));
+				 customer.setLastName(rs.getString("last_name"));
+				 customer.setFirstName(rs.getString("first_name"));
+				 customer.setCity(rs.getString("city"));
+				 customer.setState(rs.getString("state"));
+				 customer.setEmail(rs.getString("email"));
+				 customer.setZipCode(rs.getInt("zipCode"));
+				 customers.add(customer);
+		      }
+		      rs.close();
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+		 }
+		 
 		return customers;
 	}
 
@@ -209,8 +220,9 @@ public class CustomerDao {
 		 * username, which is the email address of the customer, who's ID has to be returned, is given as method parameter
 		 * The Customer's ID is required to be returned as a String
 		 */
-
+		
 		// return their string id NOT SSN
+		
 		return "111-11-1111";
 	}
 

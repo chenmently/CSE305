@@ -29,35 +29,78 @@ public class CustomerDao {
 		 * The students code to fetch data from the database based on searchKeyword will be written here
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
-		 try {
-			 Class.forName("com.mysql.cj.jdbc.Driver");
-			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
-			 Statement s = con.createStatement();
-			 String sql = "select * from customer, person where customer.ssn = person.ssn;";
-			 ResultSet rs = s.executeQuery(sql);
-			 while(rs.next()){
-				 Customer customer = new Customer();
-				 customer.setCustomerID(rs.getString("customer_id"));
-				 customer.setAddress(rs.getString("address"));
-				 customer.setLastName(rs.getString("last_name"));
-				 customer.setFirstName(rs.getString("first_name"));
-				 customer.setCity(rs.getString("city"));
-				 customer.setState(rs.getString("state"));
-				 customer.setEmail(rs.getString("email"));
-				 customer.setZipCode(rs.getInt("zipCode"));
-				 customer.setTelephone(rs.getString("phone"));
-				 customer.setCreditCard(rs.getString("ccNum"));
-				 customer.setRating(rs.getInt("rating"));
-				 customers.add(customer);
-		      }
-		      rs.close();
+		 if(searchKeyword == null)
+		 {
+			 try {
+				 Class.forName("com.mysql.cj.jdbc.Driver");
+				 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+				 Statement s = con.createStatement();
+				 String sql = "select * from customer, person where customer.ssn = person.ssn;";
+				 ResultSet rs = s.executeQuery(sql);
+				 while(rs.next()){
+					 Customer customer = new Customer();
+					 customer.setCustomerID(rs.getString("customer_id"));
+					 customer.setAddress(rs.getString("address"));
+					 customer.setLastName(rs.getString("last_name"));
+					 customer.setFirstName(rs.getString("first_name"));
+					 customer.setCity(rs.getString("city"));
+					 customer.setState(rs.getString("state"));
+					 customer.setEmail(rs.getString("email"));
+					 customer.setZipCode(rs.getInt("zipCode"));
+					 customer.setTelephone(rs.getString("phone"));
+					 customer.setCreditCard(rs.getString("ccNum"));
+					 customer.setRating(rs.getInt("rating"));
+					 customers.add(customer);
+			      }
+			      rs.close();
+			 	}
+			 	catch(Exception e) {
+			 	System.out.println(e);
+			 	}
 		 }
-		 catch(Exception e) {
-			 System.out.println(e);
+		 else
+		 {
+			 try {
+				 Class.forName("com.mysql.cj.jdbc.Driver");
+				 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+				 Statement s = con.createStatement();
+				 String sql = "select * from customer join person on customer.ssn = person.ssn" + 
+				 		" where" + 
+				 		"    person.ssn LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR ccNum LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR phone LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR email LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR last_name LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR first_name LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR address LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR city LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR state LIKE '%" + searchKeyword + "%'" + 
+				 		"    OR customer_id LIKE '%" + searchKeyword + "%'";
+				 System.out.println(sql);
+				 ResultSet rs = s.executeQuery(sql);
+				 while(rs.next()){
+					 Customer customer = new Customer();
+					 customer.setCustomerID(rs.getString("customer_id"));
+					 customer.setAddress(rs.getString("address"));
+					 customer.setLastName(rs.getString("last_name"));
+					 customer.setFirstName(rs.getString("first_name"));
+					 customer.setCity(rs.getString("city"));
+					 customer.setState(rs.getString("state"));
+					 customer.setEmail(rs.getString("email"));
+					 customer.setZipCode(rs.getInt("zipCode"));
+					 customer.setTelephone(rs.getString("phone"));
+					 customer.setCreditCard(rs.getString("ccNum"));
+					 customer.setRating(rs.getInt("rating"));
+					 customers.add(customer);
+			      }
+			      rs.close();
+			 	}
+			 	catch(Exception e) {
+			 	System.out.println(e);
+			 	}
 		 }
-		 
-		 
-		return customers;
+		
+		 return customers;
 	}
 
 
@@ -88,12 +131,7 @@ public class CustomerDao {
 		 * The students code to fetch data from the database will be written here
 		 * Each customer record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
-
-		
 		List<Customer> customers = new ArrayList<Customer>();
-		
-		/*Sample data begins*/
-		
 		try {
 			 Class.forName("com.mysql.cj.jdbc.Driver");
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
@@ -222,8 +260,22 @@ public class CustomerDao {
 		 */
 		
 		// return their string id NOT SSN
-		
-		return "111-11-1111";
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			String sql = "select ssn from person where email = '" + username + "'";
+			ResultSet rs = s.executeQuery(sql);
+			while (rs.next()) {
+				return rs.getString("ssn");
+			}
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
+		return "";
 	}
 
 
@@ -278,8 +330,6 @@ public class CustomerDao {
 		String email = customer.getEmail();
 		String creditCard = customer.getCreditCard();
 		int rating = customer.getRating();
-		
-		
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

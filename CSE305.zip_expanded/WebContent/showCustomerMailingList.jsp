@@ -22,8 +22,26 @@
 	<meta name="viewport" content="width:device-width, initial-scale=1">
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Customer Mailing List</title>
+	<style>
+	@import url('https://fonts.googleapis.com/css?family=Montserrat');
+	h1{
+			margin-top: 40px;
+			text-align: center;	
+	}
+	body{
+			font-family: 'Montserrat', sans-serif;
+		    background: #eee;
+		    background-image: url("./background.svg");
+		    background-repeat: no-repeat;
+		    background-size : cover;
+		    text-align: center;
+		}
+		
+	</style>
+	
 </head>
 <body>
+	<jsp:include page = "header.html" />
 	<h1>Customer Mailing List:</h1>
 	<br/>
 	<div class="container">

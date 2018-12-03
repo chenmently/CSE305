@@ -20,8 +20,30 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 		<meta name="viewport" content="width:device-width, initial-scale=1">
 		<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
+		<style>
+		@import url('https://fonts.googleapis.com/css?family=Montserrat');
+		h2{
+				margin-top: 40px;
+				text-align: center;	
+		}
+		body{
+				font-family: 'Montserrat', sans-serif;
+			    background: #eee;
+			    background-image: url("./background.svg");
+			    background-repeat: no-repeat;
+			    text-align: center;
+			    background-size: cover;
+			}
+		input{
+				margin-top: 10px;
+				margin-bottom:10px
+				text-align: center;	
+		}
+		</style>
 	</head>
+
 	<body>
+	<jsp:include page = "header.html" />
 		<div class="container">
 			<h2>Search Customer</h2>
 			<form action="getCustomers">

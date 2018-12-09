@@ -2,6 +2,7 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+new java.util.Date;
 
 import model.Bid;
 import model.Customer;
@@ -20,67 +21,129 @@ public class BidDao {
 		 */
 
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Bid bid = new Bid();
-			bid.setAuctionID(123);
-			bid.setCustomerID("123-12-1234");
-			bid.setBidTime("2008-12-11");
-			bid.setBidPrice(100);
-			bids.add(bid);			
+
+		try{
+
+
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+
+			String sql = "select * from auction where auction_id = "
+			  + auctionID; 
+			  
+		    ResultSet rs = s.executeQuery(sql);
+			while(rs.next()){
+			 Bid bid = new Bid();
+
+			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setCustomerID(rs.getString("customer_id"));
+			bid.setBidTime(rs.getString("bid_time"));
+			bid.setBidPrice(rs.getString("best_price"));
+			bids.add(bid);	
+			 
+
+		  }
+		      rs.close();
+
+
+		}catch(Exception e) {
+			System.out.println(e)
 		}
+
 		/*Sample data ends*/
 		
 		return bids;
 	}
 
 	public List<Bid> getAuctionHistory(String customerID) {
-		
 		List<Bid> bids = new ArrayList<Bid>();
 
 		/*
 		 * The students code to fetch data from the database
 		 * Each record is required to be encapsulated as a "Bid" class object and added to the "bids" ArrayList
-		 * customerID, which is the Customer's ID, is given as method parameter
-		 * Query to get the bid history of all the auctions in which a customer participated, indicated by customerID, must be implemented
+		 * auctionID, which is the Auction's ID, is given as method parameter
+		 * Query to get the bid history of an auction, indicated by auctionID, must be implemented
 		 */
 
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Bid bid = new Bid();
-			bid.setAuctionID(123);
-			bid.setCustomerID("123-12-1234");
-			bid.setBidTime("2008-12-11");
-			bid.setBidPrice(100);
-			bids.add(bid);			
+
+		try{
+
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+
+			String sql = "select * from bid where customer_id = "
+			  + customerID; 
+			  
+		    ResultSet rs = s.executeQuery(sql);
+			while(rs.next()){
+			 Bid bid = new Bid();
+
+			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setCustomerID(rs.getString("customer_id"));
+			bid.setBidTime(rs.getString("bid_time"));
+			bid.setBidPrice(rs.getString("best_price"));
+			bids.add(bid);	
+			 
+
+		  }
+		      rs.close();
+
+
+		}catch(Exception e) {
+			System.out.println(e)
 		}
+
 		/*Sample data ends*/
 		
 		return bids;
+		
+	
 	}
 
 	public Bid submitBid(String auctionID, String itemID, Float currentBid, Float maxBid, String customerID) {
-		
 		Bid bid = new Bid();
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First insert into person table
+			String sql = "insert into bid values ('"+ auctionID +"','" + itemID + "','" + currentBid +"','" + maxBid +"','" + customerID+ "');";
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				//Then insert into customer table
+				
+				bid.setBidPrice(currentBid);
+				bid.setCustomerID(customerID);
+				bid.setAuctionID(auctionID);
+				String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+				bid.setBidTime(timeStamp);
+			}
+			return null;
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			
+		 }
 
-		/*
-		 * The students code to insert data in the database
-		 * auctionID, which is the Auction's ID for which the bid is submitted, is given as method parameter
-		 * itemID, which is the Item's ID for which the bid is submitted, is given as method parameter
-		 * currentBid, which is the Customer's current bid, is given as method parameter
-		 * maxBid, which is the Customer's maximum bid for the item, is given as method parameter
-		 * customerID, which is the Customer's ID, is given as method parameter
-		 * Query to submit a bid by a customer, indicated by customerID, must be implemented
-		 * After inserting the bid data, return the bid details encapsulated in "bid" object
-		 */
+	}
 
-		/*Sample data begins*/
-		bid.setAuctionID(123);
-		bid.setCustomerID("123-12-1234");
-		bid.setBidTime("2008-12-11");
-		bid.setBidPrice(currentBid);
-		/*Sample data ends*/
-		
-		return bid;
+
+	public boolean contains(ArrayList<Bid> list, Bid bid) {
+		for(Bid b:list){
+			if( b.getCustomerID().equals(bid.getCustomerID()) || b.getAuctionID().equals(bid.getAuctionID()) || b.getBidTime().equals(bid.getBidTime()) ){
+				return false;
+
+			}
+
+		}
+
+		return false;
+
 	}
 
 	public List<Bid> getSalesListing(String searchKeyword) {
@@ -96,14 +159,71 @@ public class BidDao {
 		 */
 
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Bid bid = new Bid();
-			bid.setAuctionID(123);
-			bid.setCustomerID("123-12-1234");
-			bid.setBidTime("2008-12-11");
-			bid.setBidPrice(100);
-			bids.add(bid);			
+
+		try{
+
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+
+			String sql = "select * from bid where customer_id in " + "select customer_id from customer where customer.first_name "+ 
+			" LIKE '%" + searchKeyword + "%'" + " OR customer.last_name LIKE %" + searchedKeyword + "%";
+			  + customerID; 
+			  
+		    ResultSet rs = s.executeQuery(sql);
+			while(rs.next()){
+			 Bid bid = new Bid();
+
+			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setCustomerID(rs.getString("customer_id"));
+			bid.setBidTime(rs.getString("bid_time"));
+			bid.setBidPrice(rs.getString("best_price"));
+			bids.add(bid);	
+			 
+
+		  }
+		      rs.close();
+
+
+		}catch(Exception e) {
+			System.out.println(e)
 		}
+
+
+
+		try{
+
+			 Class.forName("com.mysql.cj.jdbc.Driver");
+			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			 Statement s = con.createStatement();
+
+			String sql = "select * from bid where auction_id in " + "select * from auction where item_id in select * from item where name"+ 
+			" LIKE '%" + searchKeyword + "%'";
+			  + customerID; 
+			  
+		    ResultSet rs = s.executeQuery(sql);
+			while(rs.next()){
+			 Bid bid = new Bid();
+
+			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setCustomerID(rs.getString("customer_id"));
+			bid.setBidTime(rs.getString("bid_time"));
+			bid.setBidPrice(rs.getString("best_price"));
+			bids.add(bid);	
+			 
+
+		  }
+		      rs.close();
+
+
+		}catch(Exception e) {
+			System.out.println(e)
+		}
+
+	
+
+
+
 		/*Sample data ends*/
 		
 		return bids;

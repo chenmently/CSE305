@@ -34,12 +34,12 @@ CREATE TABLE `auctions` (
   `current_bid` decimal(10,2) DEFAULT NULL,
   `current_high_bid` decimal(10,2) DEFAULT NULL,
   `open_bid` decimal(10,2) DEFAULT NULL,
-  `max_bid` decimal(10,2) DEFAULT NULL,
+  `closing_bid` decimal(10,2) DEFAULT NULL,
   `is_closed` int(1) DEFAULT NULL,
   PRIMARY KEY (`auction_id`),
   KEY `fk_auction_item_id` (`item_id`),
   KEY `fk_auction_monitor_id` (`monitor_id`),
-  KEY `fk_auction_max_bid_idx` (`max_bid`),
+  KEY `fk_auction_max_bid_idx` (`closing_bid`),
   CONSTRAINT `fk_auction_item_id` FOREIGN KEY (`item_id`) REFERENCES `item` (`item_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_auction_monitor_id` FOREIGN KEY (`monitor_id`) REFERENCES `employee` (`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -51,7 +51,7 @@ CREATE TABLE `auctions` (
 
 LOCK TABLES `auctions` WRITE;
 /*!40000 ALTER TABLE `auctions` DISABLE KEYS */;
-INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011',NULL,1,10.00,11.00,11.00,5.00,NULL,1),(2,10.00,NULL,1,'111-11-1012',NULL,2,10.00,NULL,11.00,0.00,NULL,1),(3,1.00,NULL,5,'111-11-1011',NULL,1,10.00,11.00,12.00,5.00,NULL,1);
+INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011','111-11-1015',1,10.00,11.00,11.00,5.00,NULL,0),(2,10.00,NULL,1,'111-11-1012',NULL,2,10.00,NULL,11.00,0.00,NULL,1),(3,1.00,NULL,5,'111-11-1011',NULL,1,10.00,11.00,12.00,5.00,NULL,1);
 /*!40000 ALTER TABLE `auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,7 +134,7 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES (1,'1234-5678-1234-5678','111-11-1011','shiyong'),(1,'5678-1234-5678-1234','111-11-1012','haixia'),(1,'2345-6789-2345-6789','111-11-1013','john'),(1,'6789-2345-6789-2345','111-11-1014','phil');
+INSERT INTO `customer` VALUES (1,'1234-5678-1234-5678','111-11-1011','shiyong'),(1,'5678-1234-5678-1234','111-11-1012','haixia'),(1,'2345-6789-2345-6789','111-11-1013','john'),(1,'6789-2345-6789-2345','111-11-1014','phil'),(3,'0000-0000-0000-0000','111-11-1211','111-11-1211');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -149,7 +149,7 @@ CREATE TABLE `employee` (
   `start_date` date DEFAULT NULL,
   `hourly_rate` decimal(10,2) DEFAULT NULL,
   `employee_id` char(11) NOT NULL,
-  `level` int(11) DEFAULT NULL,
+  `level` char(20) DEFAULT NULL,
   PRIMARY KEY (`employee_id`),
   CONSTRAINT `fk_employee_ssn` FOREIGN KEY (`employee_id`) REFERENCES `person` (`ssn`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -210,7 +210,8 @@ CREATE TABLE `person` (
   `zipCode` int(11) DEFAULT NULL,
   `phone` char(20) DEFAULT NULL,
   `email` char(50) DEFAULT NULL,
-  PRIMARY KEY (`ssn`)
+  PRIMARY KEY (`ssn`),
+  KEY `user_fk` (`email`,`ssn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -220,7 +221,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('111-11-1011',' Lu','ShiYong','123 Success Street','Stony Brook','NY',11790,'(516)632-8959','shiyong@cs.sunysb.edu'),('111-11-1012',' Du','Haixia','456 Fortune Road','Stony Brook','NY',11790,'(516)632-4360','dhaixia@cs.sunysb.edu'),('111-11-1013','Smith','John','789 Peace Blvd.','Los Angeles','CA',12345,'(412)443-4321','shlu@ic.sunysb.edu'),('111-11-1014',' Phil','Lewis','135 Knowledge Lane','Stony Brook','NY',11794,'(516)666-8888','pml@cs.sunysb.edu'),('111-11-1015',' Smith','David','123 College road','Stony Brook','NY',11790,'(516)215-2345','smith.david@cs.sunysb.edu'),('111-11-1016',' Warren','David','456 Sunken Street','Stony Brook','NY',11794,'(516)632-9987','warren.david@cs.sunysb.edu');
+INSERT INTO `person` VALUES ('000-00-0000','admin','admin',NULL,NULL,NULL,NULL,NULL,'root@gmail.com'),('111-11-1011','Lu','ShiYong','123','Stony Brook','NY',11790,'(516)632-8959','shiyong@cs.sunysb.edu'),('111-11-1012',' Du','Haixia','456 Fortune Road','Stony Brook','NY',11790,'(516)632-4360','dhaixia@cs.sunysb.edu'),('111-11-1013','Smith','John','789 Peace Blvd.','Los Angeles','CA',12345,'(412)443-4321','shlu@ic.sunysb.edu'),('111-11-1014',' Phil','Lewis','135 Knowledge Lane','Stony Brook','NY',11794,'(516)666-8888','pml@cs.sunysb.edu'),('111-11-1015',' Smith','Bob','123 College road','Stony Brook','NY',11790,'(516)215-2345','bob.smith@gmail.com'),('111-11-1016',' Warren','David','456 Sunken Street','Stony Brook','NY',11794,'(516)632-9987','warren.david@cs.sunysb.edu'),('111-11-1211','Ryan','John','1 Main Ln','Boston','MA',2101,'1234567890','john.ryan@gmail.com');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,10 +287,12 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `user` (
-  `username` varchar(50) NOT NULL,
-  `password` varchar(32) NOT NULL,
-  `role` varchar(45) NOT NULL,
-  PRIMARY KEY (`username`)
+  `username` char(50) NOT NULL,
+  `password` char(32) NOT NULL,
+  `role` char(45) NOT NULL,
+  `user_id` char(11) NOT NULL,
+  PRIMARY KEY (`username`,`user_id`),
+  CONSTRAINT `user_fk` FOREIGN KEY (`username`, `user_id`) REFERENCES `person` (`email`, `ssn`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -299,7 +302,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('bob.smith@gmail.com','password','customerRepresentative'),('customer@gmail.com','password','customer'),('root@gmail.com','password','manager'),('shiyong@cs.sunysb.edu','password','customer');
+INSERT INTO `user` VALUES ('bob.smith@gmail.com','password','customerRepresentative','111-11-1015'),('john.ryan@gmail.com','password','customer','111-11-1211'),('root@gmail.com','password','manager','000-00-0000'),('shiyong@cs.sunysb.edu','password','customer','111-11-1011');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -312,4 +315,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-01  8:05:24
+-- Dump completed on 2018-12-09  3:49:32

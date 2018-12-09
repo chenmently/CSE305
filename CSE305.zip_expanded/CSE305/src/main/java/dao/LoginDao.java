@@ -40,6 +40,7 @@ public class LoginDao {
 
 			// if row is returned, set the role and return login object
 			if (query_results.next()) {
+				System.out.println(query_results.getString("role"));
 				login.setRole(query_results.getString("role"));
 				return login;
 			} else

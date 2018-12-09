@@ -17,7 +17,7 @@ public class Auction {
 	private int currentBid;
 	private int currentHighBid;
 	private int reserve;
-	private int employeeID;
+	private String employeeID;
 	public int getAuctionID() {
 		return auctionID;
 	}
@@ -78,10 +78,10 @@ public class Auction {
 	public void setReserve(int reserve) {
 		this.reserve = reserve;
 	}
-	public int getEmployeeID() {
+	public String getEmployeeID() {
 		return employeeID;
 	}
-	public void setEmployeeID(int employeeID) {
+	public void setEmployeeID(String employeeID) {
 		this.employeeID = employeeID;
 	}
 	

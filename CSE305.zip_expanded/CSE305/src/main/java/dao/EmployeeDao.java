@@ -1,9 +1,12 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Customer;
 import model.Employee;
 
 public class EmployeeDao {
@@ -22,8 +25,42 @@ public class EmployeeDao {
 		 */
 		
 		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+		String first_name = employee.getFirstName();
+		String last_name = employee.getLastName();
+		String addr = employee.getAddress();
+		String city = employee.getCity();
+		String state = employee.getState();
+		String zip = employee.getZipCode();
+		String email = employee.getEmail();
+		String phone = employee.getTelephone();
+		
+		String employee_id = employee.getEmployeeID();
+		String start_date = employee.getStartDate();
+		float rate = employee.getHourlyRate();
+		String level = employee.getLevel();
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First insert into person table
+			String sql = "insert into 'person' ('ssn', 'last_name', 'first_name', 'address', 'city', 'state', 'zipCode', 'phone', 'email') values ('"+ employee_id +"','" + last_name + "','" + first_name+"','" + addr +"','" + city +"','" + state +"','" + zip +"','"+ phone +"','" + email +"');";
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				//Then insert into customer table
+				sql = "insert into 'employee' ('start_date','hourly_rate','employee_id','level') values ('"+ start_date + "','" + rate + "','" + employee_id + "','" + level + "');";
+				updated_rows = s.executeUpdate(sql);
+				if (updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
 
 	}
 
@@ -35,10 +72,40 @@ public class EmployeeDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
+		String first_name = employee.getFirstName();
+		String last_name = employee.getLastName();
+		String addr = employee.getAddress();
+		String city = employee.getCity();
+		String state = employee.getState();
+		String zip = employee.getZipCode();
+		String email = employee.getEmail();
+		String phone = employee.getTelephone();
 		
-		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+		String employee_id = employee.getEmployeeID();
+		String start_date = employee.getStartDate();
+		float rate = employee.getHourlyRate();
+		String level = employee.getLevel();
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First insert into person table
+			String sql = "update person set state = '" + state + "', last_name = '" + last_name+ "', first_name = '" + first_name + "', address = '" + addr + "', zipCode = '" + zip+ "', city = '" + city + "', phone = '" + phone + "', email = '" + email + "' where ssn = '" + employee_id+ "';";
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				sql = "update employee set start_date = '" + start_date +"', hourly_rate = '" + rate + "', level = '" + level + "' where employee_id = '" + employee_id+ "';" ;
+				updated_rows = s.executeUpdate(sql);
+				if (updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
 
 	}
 
@@ -48,10 +115,36 @@ public class EmployeeDao {
 		 * The sample code returns "success" by default.
 		 * You need to handle the database deletion and return "success" or "failure" based on result of the database deletion.
 		 */
-		
-		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			//First delete from customer table
+			String sql = "select ssn from employee where employee_id = '" + employeeID + "';";
+			ResultSet rs = s.executeQuery(sql);
+			String ssn = "";
+			while(rs.next()){
+				 ssn = rs.getString("ssn");
+			}
+		    rs.close();
+		    sql = "delete from employee where employee_id = '" + ssn + "';";	
+			int updated_rows = s.executeUpdate(sql);
+			if (updated_rows == 1)
+			{
+				sql = "delete from person where ssn  = '" + ssn + "';";	
+				updated_rows = s.executeUpdate(sql);
+				if(updated_rows == 1) return "success";
+				else return "failure";
+			}
+			else return "failure";
+			
+			 
+		 }
+		 catch(Exception e) {
+			 System.out.println(e);
+			 return "failure";
+		 }
 
 	}
 
@@ -66,23 +159,33 @@ public class EmployeeDao {
 
 		List<Employee> employees = new ArrayList<Employee>();
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Employee employee = new Employee();
-			employee.setEmail("shiyong@cs.sunysb.edu");
-			employee.setFirstName("Shiyong");
-			employee.setLastName("Lu");
-			employee.setAddress("123 Success Street");
-			employee.setCity("Stony Brook");
-			employee.setStartDate("2006-10-17");
-			employee.setState("NY");
-			employee.setZipCode(11790);
-			employee.setTelephone("5166328959");
-			employee.setEmployeeID("631-413-5555");
-			employee.setHourlyRate(100);
-			employees.add(employee);
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select *, LPAD(zipCode, 5,'0') as zip from employee INNER JOIN person on person.ssn = employee.employee_id");
+
+			while(rs.next()) {
+				Employee employee = new Employee();
+				employee.setEmail(rs.getString("email"));
+				employee.setFirstName(rs.getString("first_name"));
+				employee.setLastName(rs.getString("last_name"));
+				employee.setAddress(rs.getString("address"));
+				employee.setCity(rs.getString("city"));
+				employee.setStartDate(rs.getString("start_date"));
+				employee.setState(rs.getString("state"));
+				employee.setZipCode(rs.getString("zip"));
+				employee.setTelephone(rs.getString("phone"));
+				employee.setEmployeeID(rs.getString("employee_id"));
+				employee.setHourlyRate(rs.getFloat("hourly_rate"));
+				employees.add(employee);
+			}
+		    rs.close();
 		}
-		/*Sample data ends*/
+		catch(Exception e) {
+			System.out.println(e);
+		}
+
 		
 		return employees;
 	}
@@ -94,24 +197,34 @@ public class EmployeeDao {
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select *, LPAD(zipCode, 5,'0') as zip from employee INNER JOIN person on person.ssn = employee.employee_id");
 
-		Employee employee = new Employee();
-		
-		/*Sample data begins*/
-		employee.setEmail("shiyong@cs.sunysb.edu");
-		employee.setFirstName("Shiyong");
-		employee.setLastName("Lu");
-		employee.setAddress("123 Success Street");
-		employee.setCity("Stony Brook");
-		employee.setStartDate("2006-10-17");
-		employee.setState("NY");
-		employee.setZipCode(11790);
-		employee.setTelephone("5166328959");
-		employee.setEmployeeID("631-413-5555");
-		employee.setHourlyRate(100);
-		/*Sample data ends*/
-		
-		return employee;
+			while(rs.next()) {
+				Employee employee = new Employee();
+				employee.setEmail(rs.getString("email"));
+				employee.setFirstName(rs.getString("first_name"));
+				employee.setLastName(rs.getString("last_name"));
+				employee.setAddress(rs.getString("address"));
+				employee.setCity(rs.getString("city"));
+				employee.setStartDate(rs.getString("start_date"));
+				employee.setState(rs.getString("state"));
+				employee.setZipCode(rs.getString("zip"));
+				employee.setTelephone(rs.getString("phone"));
+				employee.setEmployeeID(rs.getString("employee_id"));
+				employee.setHourlyRate(rs.getFloat("hourly_rate"));
+				return employee;
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return null;
+
 	}
 	
 	public Employee getHighestRevenueEmployee() {
@@ -120,17 +233,36 @@ public class EmployeeDao {
 		 * The students code to fetch employee data who generated the highest revenue will be written here
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select *, SUM(auctions.current_bid) "
+					+ "from person "
+					+ "INNER JOIN auctions "
+						+ "on person.ssn = auctions.monitor_id "
+					+ "INNER JOIN sold_items "
+						+ "on sold_items.auction_id = auctions.auction_id "
+					+ "GROUP BY person.first_name "
+					+ "ORDER BY SUM(auctions.current_bid) desc "
+					+ "LIMIT 1");
+
+			while(rs.next()) {
+				Employee employee = new Employee();
+				employee.setEmail(rs.getString("email"));
+				employee.setFirstName(rs.getString("first_name"));
+				employee.setLastName(rs.getString("last_name"));
+				employee.setEmployeeID(rs.getString("employee_id"));
+				return employee;
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return null;
 		
-		Employee employee = new Employee();
-		
-		/*Sample data begins*/
-		employee.setEmail("shiyong@cs.sunysb.edu");
-		employee.setFirstName("Shiyong");
-		employee.setLastName("Lu");
-		employee.setEmployeeID("631-413-5555");
-		/*Sample data ends*/
-		
-		return employee;
 	}
 
 	public String getEmployeeID(String username) {
@@ -139,8 +271,22 @@ public class EmployeeDao {
 		 * username, which is the Employee's email address who's Employee ID has to be fetched, is given as method parameter
 		 * The Employee ID is required to be returned as a String
 		 */
-
-		return "111-11-1111";
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select user_id from user where username = " + username);
+			String id = "";
+			if(rs.next()) {
+				id= rs.getString("user_id");
+			}
+			rs.close();
+			return id;
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return null;
 	}
 
 }

@@ -121,8 +121,7 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from auction where close_bid = null and auction_id in select * from bid where customer_id in " 
-			 +"select * from employee where email like \"" + employeeEmail + "\"";
+			 String sql = "select * from auction INNER JOIN person on person.ssn = auction.monitor_id where is_closed = 0 and email like \'%" + employeeEmail + "%\'";
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -199,11 +198,11 @@ public class AuctionDao {
 
 	public List getAuctionData(String auctionID, String itemID) {
 		
-		List output = new ArrayList();
-		Item items = new Item();
-		Bid bids = new Bid();
-		Auction auctions = new Auction();
-		Customer customers = new Customer();
+		List<List<?>> output = new ArrayList<>();
+		List<Item> items = new ArrayList<>();
+		List<Bid> bids = new ArrayList<>();
+		List<Auction> auctions = new ArrayList<>();
+		List<Customer> customers = new ArrayList<>();
 		
 		/*
 		 * The students code to fetch data from the database will be written here
@@ -230,7 +229,7 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from auction where auction_id = " +auction_id;
+			 String sql = "select * from auction where auction_id = " +auctionID;
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -259,8 +258,8 @@ public class AuctionDao {
 			 Statement s = con.createStatement();
 
 			 String sql = "select * from item where item_id = " + itemID;
-			 ResultSet rs = s.executeQuery(sql);
-			 while(rs.next()){
+			 ResultSet query_results = s.executeQuery(sql);
+			 while(query_results.next()){
 			 	 Item item = new Item();
 				 item.setItemID(query_results.getInt("item_id"));
 				 item.setName(query_results.getString("name"));
@@ -272,7 +271,7 @@ public class AuctionDao {
 				 items.add(item);
 
 		      }
-		      rs.close();
+			 query_results.close();
 
 		    }
 			 	catch(Exception e) {
@@ -304,7 +303,7 @@ public class AuctionDao {
 				customer.setCreditCard(rs.getString("ccNum"));
 				customer.setTelephone(rs.getString("phone"));
 				customer.setSSN(rs.getString("ssn"));
-				costumers.add(customer);
+				customers.add(customer);
 
 		      }
 		      rs.close();
@@ -329,10 +328,10 @@ public class AuctionDao {
 			 while(rs.next()){
 			 	Bid bid = new Bid();
 
-			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getString("best_price"));
+			bid.setBidPrice(rs.getFloat("best_price"));
 			bids.add(bid);	
 			 
 
@@ -341,7 +340,7 @@ public class AuctionDao {
 
 
 		}catch(Exception e) {
-			System.out.println(e)
+			System.out.println(e);
 		}
 
 

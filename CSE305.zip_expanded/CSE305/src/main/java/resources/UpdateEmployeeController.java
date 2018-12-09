@@ -45,7 +45,7 @@ public class UpdateEmployeeController extends HttpServlet {
 		String address = request.getParameter("employeeAddress");
 		String city = request.getParameter("employeeCity");
 		String state= request.getParameter("employeeState");
-		int zipcode = Integer.parseInt(request.getParameter("employeeZipcode"));
+		String zipcode = request.getParameter("employeeZipcode");
 		String telephone = request.getParameter("employeeTelephone");
 		String ssn = request.getParameter("employeeSSN");
 		String startDate = request.getParameter("employeeStartDate");

@@ -1,8 +1,10 @@
 package dao;
 
+import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-new java.util.Date;
+import java.util.Date;
 
 import model.Bid;
 import model.Customer;
@@ -36,10 +38,10 @@ public class BidDao {
 			while(rs.next()){
 			 Bid bid = new Bid();
 
-			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getString("best_price"));
+			bid.setBidPrice(rs.getFloat("best_price"));
 			bids.add(bid);	
 			 
 
@@ -48,7 +50,7 @@ public class BidDao {
 
 
 		}catch(Exception e) {
-			System.out.println(e)
+			System.out.println(e);
 		}
 
 		/*Sample data ends*/
@@ -81,10 +83,10 @@ public class BidDao {
 			while(rs.next()){
 			 Bid bid = new Bid();
 
-			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getString("best_price"));
+			bid.setBidPrice(rs.getFloat("best_price"));
 			bids.add(bid);	
 			 
 
@@ -93,7 +95,7 @@ public class BidDao {
 
 
 		}catch(Exception e) {
-			System.out.println(e)
+			System.out.println(e);
 		}
 
 		/*Sample data ends*/
@@ -118,24 +120,25 @@ public class BidDao {
 				
 				bid.setBidPrice(currentBid);
 				bid.setCustomerID(customerID);
-				bid.setAuctionID(auctionID);
+				bid.setAuctionID(Integer.parseInt(auctionID));
 				String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 				bid.setBidTime(timeStamp);
+				return bid;
 			}
-			return null;
 			
 		 }
 		 catch(Exception e) {
 			 System.out.println(e);
 			
 		 }
+		return null;
 
 	}
 
 
 	public boolean contains(ArrayList<Bid> list, Bid bid) {
 		for(Bid b:list){
-			if( b.getCustomerID().equals(bid.getCustomerID()) || b.getAuctionID().equals(bid.getAuctionID()) || b.getBidTime().equals(bid.getBidTime()) ){
+			if( b.getCustomerID().equals(bid.getCustomerID()) || b.getAuctionID() == bid.getAuctionID() || b.getBidTime().equals(bid.getBidTime()) ){
 				return false;
 
 			}
@@ -167,17 +170,17 @@ public class BidDao {
 			 Statement s = con.createStatement();
 
 			String sql = "select * from bid where customer_id in " + "select customer_id from customer where customer.first_name "+ 
-			" LIKE '%" + searchKeyword + "%'" + " OR customer.last_name LIKE %" + searchedKeyword + "%";
-			  + customerID; 
+			" LIKE '%" + searchKeyword + "%'" + " OR customer.last_name LIKE %" + searchKeyword + "%";
+//			  + customerID; 
 			  
 		    ResultSet rs = s.executeQuery(sql);
 			while(rs.next()){
 			 Bid bid = new Bid();
 
-			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getString("best_price"));
+			bid.setBidPrice(rs.getFloat("best_price"));
 			bids.add(bid);	
 			 
 
@@ -186,7 +189,7 @@ public class BidDao {
 
 
 		}catch(Exception e) {
-			System.out.println(e)
+			System.out.println(e);
 		}
 
 
@@ -199,16 +202,16 @@ public class BidDao {
 
 			String sql = "select * from bid where auction_id in " + "select * from auction where item_id in select * from item where name"+ 
 			" LIKE '%" + searchKeyword + "%'";
-			  + customerID; 
+//			  + customerID; 
 			  
 		    ResultSet rs = s.executeQuery(sql);
 			while(rs.next()){
 			 Bid bid = new Bid();
 
-			bid.setAuctionID(rs.getString("auction_id"));
+			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getString("best_price"));
+			bid.setBidPrice(rs.getFloat("best_price"));
 			bids.add(bid);	
 			 
 
@@ -217,7 +220,7 @@ public class BidDao {
 
 
 		}catch(Exception e) {
-			System.out.println(e)
+			System.out.println(e);
 		}
 
 	

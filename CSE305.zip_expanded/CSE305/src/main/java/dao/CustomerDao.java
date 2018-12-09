@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Customer;
-import model.Customer;
+import model.Employee;
+import model.Item;
 
-import java.util.stream.IntStream;
 
 public class CustomerDao {
 	/*
@@ -111,16 +111,35 @@ public class CustomerDao {
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
 
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select *, SUM(auctions.current_bid) "
+					+ "from auctions "
+					+ "INNER JOIN sold_items "
+						+ "on sold_items.auction_id = sold_items.auction_id "
+					+ "INNER JOIN person "
+						+ "on sold_items.customer_id = person.ssn "
+					+ "GROUP BY person.first_name "
+					+ "ORDER BY SUM(auctions.current_bid) desc "
+					+ "LIMIT 1");
 
-		/*Sample data begins*/
-		Customer customer = new Customer();
-		customer.setCustomerID("111-11-1111");
-		customer.setLastName("Lu");
-		customer.setFirstName("Shiyong");
-		customer.setEmail("shiyong@cs.sunysb.edu");
-		/*Sample data ends*/
-	
-		return customer;
+			while(rs.next()) {
+				Customer customer = new Customer();
+				customer.setEmail(rs.getString("email"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setLastName(rs.getString("last_name"));
+				customer.setCustomerID(rs.getString("customer_id"));
+				return customer;
+			}
+			rs.close();
+		}
+		catch(Exception e) {
+			System.out.println(e);
+		}
+		return null;
+
 		
 	}
 
@@ -288,21 +307,37 @@ public class CustomerDao {
 		 */
 
 		List<Customer> customers = new ArrayList<Customer>();
+
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Customer customer = new Customer();
-			customer.setCustomerID("111-11-1111");
-			customer.setAddress("123 Success Street");
-			customer.setLastName("Lu");
-			customer.setFirstName("Shiyong");
-			customer.setCity("Stony Brook");
-			customer.setState("NY");
-			customer.setEmail("shiyong@cs.sunysb.edu");
-			customer.setZipCode("11790");
-			customers.add(customer);			
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			// String dbPass = System.getenv("DB_PASSWORD");
+
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
+			Statement s = con.createStatement();
+			ResultSet rs = s.executeQuery("select *, LPAD(zipCode, 5,'0') as zip " 
+					+ "FROM customer "
+					+ "INNER JOIN sold_items "
+						+ "on sold_items.customer_id = customer.customer_id "
+					+ "INNER JOIN person "
+						+ "on person.ssn = customer.ssn "
+					+ "GROUP BY ssn");
+			while (rs.next()) {
+				Customer customer = new Customer();
+				customer.setCustomerID(rs.getString("customer_id"));
+				customer.setAddress(rs.getString("address"));
+				customer.setLastName(rs.getString("last_name"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setCity(rs.getString("city"));
+				customer.setState(rs.getString("state"));
+				customer.setEmail(rs.getString("email"));
+				customer.setZipCode(rs.getString("zip"));
+				customers.add(customer);
+			}
+			rs.close();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
 		
 		return customers;
 
@@ -369,7 +404,7 @@ public class CustomerDao {
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
 		
-		String SSN = customer.getSSN();
+//		String SSN = customer.getSSN();
 		String customerID = customer.getCustomerID();
 		String firstName = customer.getFirstName();
 		String lastName = customer.getLastName();

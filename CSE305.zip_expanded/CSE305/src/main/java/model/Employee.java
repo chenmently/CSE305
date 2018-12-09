@@ -16,14 +16,14 @@ public class Employee {
 	private String address;
 	private String city;
 	private String state;
-	private int zipCode;
+	private String zipCode;
 	private String email;
 	private String telephone;
-	private String revenue;
-	public String getRevenue() {
+	private float revenue;
+	public float getRevenue() {
 		return revenue;
 	}
-	public void setRevenue(String revenue) {
+	public void setRevenue(float revenue) {
 		this.revenue = revenue;
 	}
 	public String getEmployeeID() {
@@ -80,11 +80,11 @@ public class Employee {
 	public void setState(String state) {
 		this.state = state;
 	}
-	public int getZipCode() {
+	public String getZipCode() {
 		return zipCode;
 	}
-	public void setZipCode(int zipCode) {
-		this.zipCode = zipCode;
+	public void setZipCode(String zipcode) {
+		this.zipCode = zipcode;
 	}
 	public String getEmail() {
 		return email;

@@ -197,7 +197,7 @@ public class ItemDao {
 			// fix sql query for item suggestions
 			ResultSet rs = s.executeQuery("SELECT item.item_id,item.name,item.type,item.num_copies FROM "
 					+ "auctions inner join sold_items on auctions.auction_id = sold_items.auction_id "
-					+ "inner join item on auctions.item_id = item.item_id where sold_items.customer_id like '%" + "john" + "%'");
+					+ "inner join item on auctions.item_id = item.item_id where sold_items.customer_id like '%" + customerID + "%'");
 					
 			while (rs.next()) {
 				Item item = new Item();

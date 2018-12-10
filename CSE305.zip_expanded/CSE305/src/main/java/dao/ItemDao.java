@@ -195,12 +195,9 @@ public class ItemDao {
 			ArrayList<Item> boughtItems = new ArrayList<Item>();
 
 			// fix sql query for item suggestions
-			ResultSet rs = s.executeQuery("select item.item_id,item.name,item.type,item.num_copies,"
-				    + "item.description,item.year_manufactured "  
-					+ "from sold_items " 
-                    + "inner join item "
-					+ "on item.item_id = sold_item.item_id "
-					+ "where sold_items.customer_id like \'%" + customerID + "%\'");
+			ResultSet rs = s.executeQuery("SELECT item.item_id,item.name,item.type,item.num_copies FROM "
+					+ "auctions inner join sold_items on auctions.auction_id = sold_items.auction_id "
+					+ "inner join item on auctions.item_id = item.item_id where sold_items.customer_id like '%" + "john" + "%'");
 					
 			while (rs.next()) {
 				Item item = new Item();
@@ -208,15 +205,13 @@ public class ItemDao {
 				item.setName(rs.getString("name"));
 				item.setType(rs.getString("type"));
 				item.setNumCopies(rs.getInt("num_copies"));
-				item.setDescription(rs.getString("description"));
-				item.setYearManufactured(rs.getInt("year_manufactured"));
 				boughtItems.add(item);
 			}
 			rs.close();
 
             ArrayList<Item> allItems = new ArrayList<Item>();
 			rs = s.executeQuery("select * "  
-					+ "from items");
+					+ "from item");
 					
 			while (rs.next()) {
 				Item item = new Item();
@@ -233,10 +228,12 @@ public class ItemDao {
 			HashSet<String> type = new HashSet<String>();
 
 			for(Item item:boughtItems) {
+				System.out.println(item.getType());
 				type.add(item.getType());
 			}
 
 			for(Item item:allItems) {
+				System.out.println(item.getType());
 				if(type.contains(item.getType()) && item.getNumCopies() > 0) {
 					items.add(item);
 				}
@@ -548,7 +545,7 @@ public class ItemDao {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// String dbPass = System.getenv("DB_PASSWORD");
-
+			System.out.println(customerID);
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
 			String sql = "select *, SUM(copies_sold) from sold_items "

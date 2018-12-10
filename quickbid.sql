@@ -51,7 +51,7 @@ CREATE TABLE `auctions` (
 
 LOCK TABLES `auctions` WRITE;
 /*!40000 ALTER TABLE `auctions` DISABLE KEYS */;
-INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011','111-11-1015',1,10.00,11.00,11.00,5.00,NULL,0),(2,10.00,NULL,1,'111-11-1012',NULL,2,10.00,NULL,11.00,0.00,NULL,1),(3,1.00,NULL,5,'111-11-1011',NULL,1,10.00,11.00,12.00,5.00,NULL,1);
+INSERT INTO `auctions` VALUES (1,1.00,NULL,1,'111-11-1011','111-11-1015',1,10.00,11.00,11.00,5.00,NULL,0),(2,10.00,NULL,1,'111-11-1012','111-11-1015',2,10.00,9.00,11.00,0.00,NULL,1),(3,1.00,NULL,5,'111-11-1011','111-11-1015',1,10.00,11.00,12.00,5.00,NULL,1);
 /*!40000 ALTER TABLE `auctions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -275,7 +275,7 @@ CREATE TABLE `sold_items` (
 
 LOCK TABLES `sold_items` WRITE;
 /*!40000 ALTER TABLE `sold_items` DISABLE KEYS */;
-INSERT INTO `sold_items` VALUES ('shiyang',1),('haixia',2),('shiyang',3);
+INSERT INTO `sold_items` VALUES ('haixia',2),('john',3);
 /*!40000 ALTER TABLE `sold_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +302,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('bob.smith@gmail.com','password','customerRepresentative','111-11-1015'),('john.ryan@gmail.com','password','customer','111-11-1211'),('root@gmail.com','password','manager','000-00-0000'),('shiyong@cs.sunysb.edu','password','customer','111-11-1011');
+INSERT INTO `user` VALUES ('bob.smith@gmail.com','password','customerRepresentative','111-11-1015'),('dhaixia@cs.sunysb.edu','password','customer','111-11-1012'),('john.ryan@gmail.com','password','customer','111-11-1211'),('shiyong@cs.sunysb.edu','password','customer','111-11-1011'),('warren.david@cs.sunysb.edu','password','manager','111-11-1016');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -315,4 +315,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-12-09  3:49:32
+-- Dump completed on 2018-12-09 20:53:04

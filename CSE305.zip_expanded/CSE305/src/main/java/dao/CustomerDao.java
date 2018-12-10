@@ -115,16 +115,17 @@ public class CustomerDao {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *, SUM(auctions.current_bid) "
-					+ "from auctions "
-					+ "INNER JOIN sold_items "
-						+ "on sold_items.auction_id = sold_items.auction_id "
-					+ "INNER JOIN person "
-						+ "on sold_items.customer_id = person.ssn "
-					+ "GROUP BY person.first_name "
-					+ "ORDER BY SUM(auctions.current_bid) desc "
-					+ "LIMIT 1");
-
+			String sql = "select *, SUM(auctions.current_bid) "+
+					 "from auctions " +
+					 "INNER JOIN sold_items on sold_items.auction_id = sold_items.auction_id " +
+					 "INNER JOIN customer on sold_items.customer_id =customer.customer_id " +
+					 "INNER JOIN person on customer.ssn = person.ssn " +
+					 "GROUP BY customer.customer_id " +
+					 "ORDER BY SUM(auctions.current_bid) desc " + 
+					 "LIMIT 1";
+			System.out.println(sql);
+			ResultSet rs = s.executeQuery(sql);
+			
 			while(rs.next()) {
 				Customer customer = new Customer();
 				customer.setEmail(rs.getString("email"));
@@ -321,7 +322,7 @@ public class CustomerDao {
 						+ "on sold_items.customer_id = customer.customer_id "
 					+ "INNER JOIN person "
 						+ "on person.ssn = customer.ssn "
-					+ "GROUP BY ssn");
+					+ "GROUP BY person.ssn");
 			while (rs.next()) {
 				Customer customer = new Customer();
 				customer.setCustomerID(rs.getString("customer_id"));

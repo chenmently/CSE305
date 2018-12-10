@@ -238,7 +238,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *, SUM(auctions.current_bid) "
+			String sql= "select *, SUM(auctions.current_bid) "
 					+ "from person "
 					+ "INNER JOIN auctions "
 						+ "on person.ssn = auctions.monitor_id "
@@ -246,14 +246,15 @@ public class EmployeeDao {
 						+ "on sold_items.auction_id = auctions.auction_id "
 					+ "GROUP BY person.first_name "
 					+ "ORDER BY SUM(auctions.current_bid) desc "
-					+ "LIMIT 1");
-
+					+ "LIMIT 1";
+			System.out.println(sql);
+			ResultSet rs = s.executeQuery(sql);
 			while(rs.next()) {
 				Employee employee = new Employee();
 				employee.setEmail(rs.getString("email"));
 				employee.setFirstName(rs.getString("first_name"));
 				employee.setLastName(rs.getString("last_name"));
-				employee.setEmployeeID(rs.getString("employee_id"));
+				employee.setEmployeeID(rs.getString("ssn"));
 				return employee;
 			}
 			rs.close();
@@ -275,7 +276,7 @@ public class EmployeeDao {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select user_id from user where username = " + username);
+			ResultSet rs = s.executeQuery("select user_id from user where username = '" + username + "'");
 			String id = "";
 			if(rs.next()) {
 				id= rs.getString("user_id");

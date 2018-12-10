@@ -31,8 +31,8 @@ public class BidDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			String sql = "select * from auction where auction_id = "
-			  + auctionID; 
+			String sql = "select * from auctions where auction_id = '"
+			  + auctionID + "'"; 
 			  
 		    ResultSet rs = s.executeQuery(sql);
 			while(rs.next()){
@@ -41,7 +41,7 @@ public class BidDao {
 			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getFloat("best_price"));
+			bid.setBidPrice(rs.getFloat("bid_price"));
 			bids.add(bid);	
 			 
 
@@ -76,9 +76,7 @@ public class BidDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			String sql = "select * from bid where customer_id = "
-			  + customerID; 
-			  
+			String sql = "select * from bid where customer_id = '"+ customerID + "'"; 
 		    ResultSet rs = s.executeQuery(sql);
 			while(rs.next()){
 			 Bid bid = new Bid();
@@ -86,7 +84,7 @@ public class BidDao {
 			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getFloat("best_price"));
+			bid.setBidPrice(rs.getFloat("bid_price"));
 			bids.add(bid);	
 			 
 
@@ -137,9 +135,9 @@ public class BidDao {
 
 
 	public boolean contains(ArrayList<Bid> list, Bid bid) {
-		for(Bid b:list){
+		for(Bid b : list){
 			if( b.getCustomerID().equals(bid.getCustomerID()) || b.getAuctionID() == bid.getAuctionID() || b.getBidTime().equals(bid.getBidTime()) ){
-				return false;
+				return true;
 
 			}
 
@@ -169,10 +167,23 @@ public class BidDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			String sql = "select * from bid where customer_id in " + "select customer_id from customer where customer.first_name "+ 
-			" LIKE '%" + searchKeyword + "%'" + " OR customer.last_name LIKE %" + searchKeyword + "%";
+			String sql = "select * " +
+					"from bid " +
+					"where (customer_id = " +
+						"(select ssn " +
+					    "from person " +
+					    "where person.first_name " + 
+					    "LIKE \'%"+ searchKeyword +"%\' OR person.last_name like \'%"+ searchKeyword +"%\'))"
+					 + "OR (auction_id = "
+						 + "(select auction_id "
+						 + "from auctions "
+						 + "where item_id in "
+						 	+ "(select item_id "
+						 	+ "from item "
+						 	+ "where name LIKE \'%"+ searchKeyword +"%\')"
+						 + "))" ;
 //			  + customerID; 
-			  
+			System.out.println(sql);
 		    ResultSet rs = s.executeQuery(sql);
 			while(rs.next()){
 			 Bid bid = new Bid();
@@ -180,7 +191,7 @@ public class BidDao {
 			bid.setAuctionID(rs.getInt("auction_id"));
 			bid.setCustomerID(rs.getString("customer_id"));
 			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getFloat("best_price"));
+			bid.setBidPrice(rs.getFloat("bid_price"));
 			bids.add(bid);	
 			 
 
@@ -193,42 +204,6 @@ public class BidDao {
 		}
 
 
-
-		try{
-
-			 Class.forName("com.mysql.cj.jdbc.Driver");
-			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
-			 Statement s = con.createStatement();
-
-			String sql = "select * from bid where auction_id in " + "select * from auction where item_id in select * from item where name"+ 
-			" LIKE '%" + searchKeyword + "%'";
-//			  + customerID; 
-			  
-		    ResultSet rs = s.executeQuery(sql);
-			while(rs.next()){
-			 Bid bid = new Bid();
-
-			bid.setAuctionID(rs.getInt("auction_id"));
-			bid.setCustomerID(rs.getString("customer_id"));
-			bid.setBidTime(rs.getString("bid_time"));
-			bid.setBidPrice(rs.getFloat("best_price"));
-			bids.add(bid);	
-			 
-
-		  }
-		      rs.close();
-
-
-		}catch(Exception e) {
-			System.out.println(e);
-		}
-
-	
-
-
-
-		/*Sample data ends*/
-		
 		return bids;
 	}
 

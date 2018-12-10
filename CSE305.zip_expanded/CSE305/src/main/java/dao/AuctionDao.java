@@ -30,7 +30,7 @@ public class AuctionDao {
 			 Class.forName("com.mysql.cj.jdbc.Driver");
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
-			 String sql = "select * from auction";
+			 String sql = "select * from auctions";
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -75,7 +75,7 @@ public class AuctionDao {
 			 Statement s = con.createStatement();
 
 
-			 String sql = "select * from auction where auction_id in " + " select auction_id from bid where customer_id = " + customerID;
+			 String sql = "select * from auctions where auction_id in " + " select auction_id from bid where customer_id = " + customerID;
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -121,7 +121,7 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from auction INNER JOIN person on person.ssn = auction.monitor_id where is_closed = 0 and email like \'%" + employeeEmail + "%\'";
+			 String sql = "select * from auctions INNER JOIN person on person.ssn = auctions.monitor_id where is_closed = 0 and email like \'%" + employeeEmail + "%\'";
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -163,11 +163,11 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String insert = "insert into auction (auction_id) values ('"+ auctionID + "');";
+			 String insert = "insert into auctions (auction_id) values ('"+ auctionID + "');";
 			 ResultSet rs1 = s.executeQuery(insert);
 			 rs1.close();
 
-			 String sql = "select * from auction where auction_id = " + auctionID;
+			 String sql = "select * from auctions where auction_id = '" + auctionID + "'";
 			 ResultSet rs = s.executeQuery(sql);
 			 if(!rs.next()) {
 			 	rs.close();
@@ -229,7 +229,7 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from auction where auction_id = " +auctionID;
+			 String sql = "select * from auctions where auction_id = '" +auctionID + "'";
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
 				 Auction auction = new Auction();
@@ -257,7 +257,7 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from item where item_id = " + itemID;
+			 String sql = "select * from item where item_id = '" + itemID+ "'";
 			 ResultSet query_results = s.executeQuery(sql);
 			 while(query_results.next()){
 			 	 Item item = new Item();
@@ -286,8 +286,8 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			 String sql = "select * from bid where customer_id in select customer_id from bid where auction_id = "
-			  + auctionID; 
+			 String sql = "select * from bid where customer_id in select customer_id from bid where auction_id = '"
+			  + auctionID +"'"; 
 			  
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
@@ -321,8 +321,8 @@ public class AuctionDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			String sql = "select * from auction where auction_id = "
-			  + auctionID; 
+			String sql = "select * from auctions where auction_id = '"
+			  + auctionID + "'"; 
 			  
 			 ResultSet rs = s.executeQuery(sql);
 			 while(rs.next()){
@@ -344,13 +344,6 @@ public class AuctionDao {
 		}
 
 
-					
-			
-			
-			
-			
-	
-		
 		/*Sample data ends*/
 		
 		output.add(items);

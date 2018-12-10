@@ -141,10 +141,16 @@ public class ItemDao {
 
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *, SUM(current_high_bid) " + "FROM sold_items "
-					+ "INNER JOIN auctions " + "ON sold_items.auction_id = auctions.auction_id " + "INNER JOIN item "
-					+ "ON auctions.item_id = item.item_id " + "where item.name like \'%" + searchKeyword
-					+ "%\' or item.type like \'%" + searchKeyword + "%\'");
+			// maybe change customer search field to their first/last name instead of their customerid ??
+			ResultSet rs = s.executeQuery("select *, SUM(current_high_bid) "  
+					+ "FROM sold_items "
+					+ "INNER JOIN auctions " 
+						+ "ON sold_items.auction_id = auctions.auction_id " 
+					+ "INNER JOIN item "
+						+ "ON auctions.item_id = item.item_id " 
+					+ "where item.name like \'%" + searchKeyword + "%\' or "
+							+ "item.type like \'%" + searchKeyword + "%\' or "
+							+ "sold_items.customer_id like \'%" + searchKeyword + "%\'");
 			while (rs.next()) {
 				Item item = new Item();
 				item.setItemID(rs.getInt("item_id"));
@@ -311,7 +317,7 @@ public class ItemDao {
 
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select distinct type" + "FROM item");
+			ResultSet rs = s.executeQuery("select distinct type " + "FROM item");
 			while (rs.next()) {
 				Item item = new Item();
 				item.setType(rs.getString("type"));
@@ -363,8 +369,8 @@ public class ItemDao {
 
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *" + "FROM item " + "INNER JOIN auctions "
-					+ "ON auctions.item_id = item.item_id " + "where item.name like \'%" + itemName + "%\'");
+			ResultSet rs = s.executeQuery("select * " + "FROM item " + "INNER JOIN auctions "
+					+ "ON auctions.item_id = item.item_id " + "where item.name like \'%" + itemName + "%\' and auctions.is_closed = 0");
 			while (rs.next()) {
 				Item item = new Item();
 				item.setItemID(rs.getInt("item_id"));
@@ -437,8 +443,8 @@ public class ItemDao {
 
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *" + "FROM item " + "INNER JOIN auctions "
-					+ "ON auctions.item_id = item.item_id " + "where item.type like \'%" + itemType + "%\'");
+			ResultSet rs = s.executeQuery("select * " + "FROM item " + "INNER JOIN auctions "
+					+ "ON auctions.item_id = item.item_id " + "where item.type like \'%" + itemType + "%\' and auctions.is_closed = 0");
 			while (rs.next()) {
 				Item item = new Item();
 				item.setItemID(rs.getInt("item_id"));
@@ -502,11 +508,17 @@ public class ItemDao {
 
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery("select *, SUM(copies_sold) from sold_items "
-					+ "inner join auctions " + "on auctions.auction_id = sold_items.auction_id " + "inner join item "
-					+ "on item.item_id = auctions.item_id " + "where auctions.is_closed = 1 and "
-					+ "sold_items.customer_id = '" + customerID + "' " + "group by item.name "
-					+ "order by SUM(copies_sold) desc " + "limit 5");
+			String sql = "select *, SUM(copies_sold) from sold_items "
+					+ "inner join auctions " 
+						+ "on auctions.auction_id = sold_items.auction_id " 
+					+ "inner join item "
+						+ "on item.item_id = auctions.item_id "
+					+ "inner join customer "
+						+ "on sold_items.customer_id = customer.customer_id "
+					+ "where auctions.is_closed = 1 and "
+					+ "customer.ssn = '" + customerID + "' " + "group by item.name "
+					+ "order by SUM(copies_sold) desc " + "limit 5";
+			ResultSet rs = s.executeQuery(sql);
 			while (rs.next()) {
 				Item item = new Item();
 				item.setItemID(rs.getInt("item_id"));

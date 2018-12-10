@@ -40,14 +40,13 @@ public class LoginDao {
 
 			// if row is returned, set the role and return login object
 			if (query_results.next()) {
-				System.out.println(query_results.getString("role"));
 				login.setRole(query_results.getString("role"));
 				return login;
 			} else
 				return null;
 
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("TEST" +e);
 		}
 
 		// login.setRole("customerRepresentative");

@@ -31,7 +31,7 @@ public class BidDao {
 			 Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			 Statement s = con.createStatement();
 
-			String sql = "select * from auctions where auction_id = '"
+			String sql = "select * from bid where auction_id = '"
 			  + auctionID + "'"; 
 			  
 		    ResultSet rs = s.executeQuery(sql);

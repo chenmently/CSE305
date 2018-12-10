@@ -195,11 +195,12 @@ public class ItemDao {
 			ArrayList<Item> boughtItems = new ArrayList<Item>();
 
 			// fix sql query for item suggestions
-			ResultSet rs = s.executeQuery("select * "  
+			ResultSet rs = s.executeQuery("select item.item_id,item.name,item.type,item.num_copies,"
+				    + "item.description,item.year_manufactured "  
 					+ "from sold_items " 
-                    + "inner join item"
+                    + "inner join item "
 					+ "on item.item_id = sold_item.item_id "
-					+ "where sold_items.customer_id like  \'%" + customerID + "%\'"); 
+					+ "where sold_items.customer_id like \'%" + customerID + "%\'");
 					
 			while (rs.next()) {
 				Item item = new Item();

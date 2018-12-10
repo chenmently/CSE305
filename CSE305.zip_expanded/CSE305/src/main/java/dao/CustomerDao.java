@@ -421,6 +421,7 @@ public class CustomerDao {
 		
 		// NOTE , BECAUSE OF THE JSP PAGE, customerID ACTUALLY HOLDS A SOCIAL SECURITY # WHILE SSN IS NULL
 		try {
+			System.out.println(zipCode);
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();

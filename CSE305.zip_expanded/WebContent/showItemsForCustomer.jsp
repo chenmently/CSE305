@@ -43,7 +43,7 @@
 </head>
 
 <body>
-	<jsp:include page = "header.html" />ody>
+	<jsp:include page = "header.html" />
 
 	<h1>The Customer-wise Item Details are:</h1>
 	<div class="container">

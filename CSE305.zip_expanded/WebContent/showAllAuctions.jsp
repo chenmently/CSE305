@@ -20,8 +20,29 @@
 	<meta name="viewport" content="width:device-width, initial-scale=1">
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />
 	<title>Auction Details</title>
+	<style>
+	@import url('https://fonts.googleapis.com/css?family=Montserrat');
+	h1{
+			margin-top: 40px;
+			text-align: center;	
+		}
+	html{
+		margin: 0;
+    	height: 100%;
+	}
+	body{
+			font-family: 'Montserrat', sans-serif;
+		    background: #eee;
+		    background-image: url("./background.svg");
+		    background-repeat: no-repeat;
+		    text-align: center;
+		    height: 100%;
+		}
+	</style>
 </head>
+
 <body>
+	<jsp:include page = "header.html" />
 
 	<h1>The Auctions are:</h1>
 	<div class="container">

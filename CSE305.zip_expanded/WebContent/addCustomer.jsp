@@ -28,12 +28,17 @@
 			margin-top: 40px;
 			text-align: center;	
 		}
+	html{
+		margin: 0;
+   	 	height: 100%;
+	}
 	body{
 			font-family: 'Montserrat', sans-serif;
 		    background: #eee;
 		    background-image: url("./background.svg");
 		    background-repeat: no-repeat;
 		    text-align: center;
+		    height : 100%;
 		}
 	</style>
 </head>

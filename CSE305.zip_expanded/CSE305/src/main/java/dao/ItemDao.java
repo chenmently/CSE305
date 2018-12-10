@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.HashMap;
 
 import model.Auction;
 import model.Bid;
@@ -169,7 +171,6 @@ public class ItemDao {
 		return items;
 
 	}
-
 	public List<Item> getItemSuggestions(String customerID) {
 
 		/*
@@ -183,17 +184,7 @@ public class ItemDao {
 
 		List<Item> items = new ArrayList<Item>();
 
-		/* Sample data begins */
-		// for (int i = 0; i < 4; i++) {
-		// Item item = new Item();
-		// item.setItemID(123);
-		// item.setDescription("sample description");
-		// item.setType("BOOK");
-		// item.setName("Sample Book");
-		// item.setNumCopies(2);
-		// items.add(item);
-		// }
-		/* Sample data ends */
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			// String dbPass = System.getenv("DB_PASSWORD");
@@ -201,14 +192,65 @@ public class ItemDao {
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/quickbid", "root", "password");
 			Statement s = con.createStatement();
 
+			ArrayList<Item> boughtItems = new ArrayList<Item>();
+
 			// fix sql query for item suggestions
+			ResultSet rs = s.executeQuery("select * "  
+					+ "from sold_items " 
+                    + "inner join item"
+					+ "on item.item_id = sold_item.item_id "
+					+ "where sold_items.customer_id like  \'%" + customerID + "%\'"); 
+					
+			while (rs.next()) {
+				Item item = new Item();
+				item.setItemID(rs.getInt("item_id"));
+				item.setName(rs.getString("name"));
+				item.setType(rs.getString("type"));
+				item.setNumCopies(rs.getInt("num_copies"));
+				item.setDescription(rs.getString("description"));
+				item.setYearManufactured(rs.getInt("year_manufactured"));
+				boughtItems.add(item);
+			}
+			rs.close();
+
+            ArrayList<Item> allItems = new ArrayList<Item>();
+			rs = s.executeQuery("select * "  
+					+ "from items");
+					
+			while (rs.next()) {
+				Item item = new Item();
+				item.setItemID(rs.getInt("item_id"));
+				item.setName(rs.getString("name"));
+				item.setType(rs.getString("type"));
+				item.setNumCopies(rs.getInt("num_copies"));
+				item.setDescription(rs.getString("description"));
+				item.setYearManufactured(rs.getInt("year_manufactured"));
+				allItems.add(item);
+			}
+			rs.close();
+
+			HashSet<String> type = new HashSet<String>();
+
+			for(Item item:boughtItems) {
+				type.add(item.getType());
+			}
+
+			for(Item item:allItems) {
+				if(type.contains(item.getType()) && item.getNumCopies() > 0) {
+					items.add(item);
+				}
+			}
+
+		
+							
+
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return items;
 
 	}
-
 	public List<List<?>> getItemsBySeller(String sellerID) {
 
 		/*

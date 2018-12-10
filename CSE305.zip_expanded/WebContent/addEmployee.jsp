@@ -20,8 +20,29 @@
 	<link href="webjars/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" />	
 	<script src="webjars/jquery/3.3.1-1/jquery.min.js"></script>
 	<script src="webjars/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<style>
+	@import url('https://fonts.googleapis.com/css?family=Montserrat');
+	h1{
+			margin-top: 40px;
+			text-align: center;	
+		}
+	html{
+		margin: 0;
+    	height: 100%;
+	}
+	body{
+			font-family: 'Montserrat', sans-serif;
+		    background: #eee;
+		    background-image: url("./background.svg");
+		    background-repeat: no-repeat;
+		    text-align: center;
+		    height: 100%;
+		}
+	</style>
 </head>
+
 <body>
+	<jsp:include page = "header.html" />
 	<div class="container">
 	
 	<h1>Add a new Employee:</h1>
